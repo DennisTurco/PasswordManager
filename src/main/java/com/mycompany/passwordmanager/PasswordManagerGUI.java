@@ -4,6 +4,9 @@
  */
 package com.mycompany.passwordmanager;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import java.awt.Image;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,6 +18,8 @@ import org.json.JSONObject;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 /**
  *
  * @author Lorenzo
@@ -24,8 +29,12 @@ public class PasswordManagerGUI extends javax.swing.JFrame {
     /**
      * Creates new form PasswordgeneratorGUI
      */
-    public PasswordManagerGUI() {
+    public PasswordManagerGUI() {  //costruttore
         initComponents();
+        
+        //logo application
+        Image icon = new ImageIcon (this.getClass().getResource("/images/logoIcon.png")).getImage();
+        this.setIconImage(icon);  
     }
 
     /**
@@ -39,15 +48,15 @@ public class PasswordManagerGUI extends javax.swing.JFrame {
 
         Title = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        PasswordSize = new javax.swing.JTextField();
         OutputPassword = new javax.swing.JTextField();
         GeneratePasswordButton = new javax.swing.JButton();
         Symbol = new javax.swing.JCheckBox();
         Uppercase = new javax.swing.JCheckBox();
         LowercaseLetters = new javax.swing.JCheckBox();
-        SvaePasswordButton = new javax.swing.JButton();
         Numbers = new javax.swing.JCheckBox();
+        PasswordSize = new javax.swing.JSpinner();
+        LoginButton = new javax.swing.JButton();
+        RegisterButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -55,14 +64,6 @@ public class PasswordManagerGUI extends javax.swing.JFrame {
         Title.setText("Password Generator");
 
         jLabel1.setText("Choose options to generate your password:");
-
-        jLabel2.setText("Password size: ");
-
-        PasswordSize.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PasswordSizeActionPerformed(evt);
-            }
-        });
 
         OutputPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -77,54 +78,70 @@ public class PasswordManagerGUI extends javax.swing.JFrame {
             }
         });
 
-        Symbol.setText("Symbol");
+        Symbol.setText(" Special characters");
 
         Uppercase.setText("Uppercase");
 
         LowercaseLetters.setText("Lowercase letters");
 
-        SvaePasswordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/passwordmanager/img/filepng.png"))); // NOI18N
-
         Numbers.setText("Numbers");
+
+        PasswordSize.setToolTipText("Password size");
+
+        LoginButton.setText("Login");
+        LoginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LoginButtonActionPerformed(evt);
+            }
+        });
+
+        RegisterButton.setText("Register");
+        RegisterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RegisterButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(102, 102, 102)
+                .addComponent(GeneratePasswordButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Title)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Symbol, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Uppercase, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(LowercaseLetters)
-                            .addComponent(Numbers, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(Numbers, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Symbol)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(72, 72, 72)
-                                .addComponent(OutputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(SvaePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(102, 102, 102)
-                                .addComponent(GeneratePasswordButton)))))
-                .addContainerGap(91, Short.MAX_VALUE))
+                        .addGap(78, 78, 78)
+                        .addComponent(OutputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(87, 87, 87)
+                        .addComponent(Title)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                .addComponent(RegisterButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(LoginButton)
+                .addGap(46, 46, 46))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(Title)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Title)
+                    .addComponent(LoginButton)
+                    .addComponent(RegisterButton))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -136,26 +153,20 @@ public class PasswordManagerGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Numbers)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(SvaePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(OutputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(OutputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(GeneratePasswordButton)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void GeneratePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GeneratePasswordButtonActionPerformed
-    int passwordSize = getLenghtPassword();
-        if (passwordSize <= 0) {
-            return; // Gestisce la lunghezza della password non valida
-        }
+        Integer passwordSize = (Integer)PasswordSize.getValue();
 
         boolean useLower = LowercaseLetters.isSelected();
         boolean useUpper = Uppercase.isSelected();
@@ -164,72 +175,32 @@ public class PasswordManagerGUI extends javax.swing.JFrame {
 
         String password = generatePassword(passwordSize, useLower, useUpper, useNumbers, useSymbols);
         
-        // Controlla se il testo della password è vuoto
         if (password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Impossibile generare la password", "Failure", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Seleziona almeno un'opzione per generare la password.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        // Imposta il campo di testo della password generata
+
         OutputPassword.setText(password);
 
+
     }//GEN-LAST:event_GeneratePasswordButtonActionPerformed
-    public int getLenghtPassword(){
-    String testo = PasswordSize.getText();
-        // Controlla se il testo è vuoto
-        if (testo.equals("")) {
-            JOptionPane.showMessageDialog(this, "Enter a number for generate a password", "Failure", JOptionPane.ERROR_MESSAGE);
-            return 0;
-        }
-        int lunghezza = Integer.parseInt(testo);
-        return lunghezza;               					
-    }
-    private void PasswordSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordSizeActionPerformed
-
-    }//GEN-LAST:event_PasswordSizeActionPerformed
-
+   
     private void OutputPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OutputPasswordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_OutputPasswordActionPerformed
 
-    public void WritePasswordToJSON(String password, String passwordName){
-       String filePath = "passwords.json";
+    private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
+        //apre un nuovo frame
+        LoginGUI saveFrame = new LoginGUI();
+        saveFrame.setVisible(true);
+    }//GEN-LAST:event_LoginButtonActionPerformed
 
-        // Crea un nuovo oggetto JSON con le informazioni da aggiungere
-        JSONObject newEntry = new JSONObject();
-        newEntry.put("NomePassword", passwordName);
-        newEntry.put("Password", password);
-
-        try {
-            File file = new File(filePath);
-            JSONArray jsonArray;
-
-            // Se il file esiste, leggi il contenuto e convertilo in un JSONArray
-            if (file.exists()) {
-                String content = new String(Files.readAllBytes(Paths.get(filePath)));
-                if (content.isEmpty()) {
-                    jsonArray = new JSONArray();
-                } else {
-                    jsonArray = new JSONArray(content);
-                }
-            } else {
-                // Se il file non esiste, crea un nuovo JSONArray
-                jsonArray = new JSONArray();
-            }
-
-            // Aggiungi il nuovo oggetto JSON al JSONArray
-            jsonArray.put(newEntry);
-
-            // Scrivi il JSONArray aggiornato nel file
-            try (FileWriter fileWriter = new FileWriter(filePath)) {
-                fileWriter.write(jsonArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
-            }
-
-            System.out.println("Informazioni aggiunte con successo.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    private void RegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterButtonActionPerformed
+        //apre un nuovo frame
+        RegisterGUI registerFrame = new RegisterGUI();
+        registerFrame.setVisible(true);
+    }//GEN-LAST:event_RegisterButtonActionPerformed
+    
     private String generatePassword(int length, boolean useLower, boolean useUpper, boolean useNumbers, boolean useSymbols) {
         StringBuilder password = new StringBuilder(length);
         SecureRandom random = new SecureRandom();
@@ -255,42 +226,32 @@ public class PasswordManagerGUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-public static void main(String args[]) {
+    public static void main(String args[]) {
+        
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PasswordManagerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PasswordManagerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PasswordManagerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PasswordManagerGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new PasswordManagerGUI().setVisible(true);
             }
         });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton GeneratePasswordButton;
+    private javax.swing.JButton LoginButton;
     private javax.swing.JCheckBox LowercaseLetters;
     private javax.swing.JCheckBox Numbers;
     private javax.swing.JTextField OutputPassword;
-    private javax.swing.JTextField PasswordSize;
-    private javax.swing.JButton SvaePasswordButton;
+    private javax.swing.JSpinner PasswordSize;
+    private javax.swing.JButton RegisterButton;
     private javax.swing.JCheckBox Symbol;
     private javax.swing.JLabel Title;
     private javax.swing.JCheckBox Uppercase;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
