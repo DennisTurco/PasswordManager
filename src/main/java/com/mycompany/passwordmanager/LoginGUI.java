@@ -4,6 +4,7 @@
  */
 package com.mycompany.passwordmanager;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,6 +26,8 @@ public class LoginGUI extends javax.swing.JFrame {
         //logo application
         Image icon = new ImageIcon (this.getClass().getResource("/images/logoIcon.png")).getImage();
         this.setIconImage(icon);  
+        
+       
     }
 
     /**
@@ -102,10 +105,11 @@ public class LoginGUI extends javax.swing.JFrame {
                 .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(LoginButton)
-                .addContainerGap(426, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
@@ -115,12 +119,12 @@ public class LoginGUI extends javax.swing.JFrame {
         
         // controllo se il testo è vuoto
         if (password.equals("") || username.equals("")) {     // testo == "" 
-            JOptionPane.showMessageDialog(this, "Impossibile accedere! Inserire l'utente e la password", "Failure", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Unable to log in! Enter the user and password", "Failure", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         if(!ReadAccoutToJSON(username, password)){
-            JOptionPane.showMessageDialog(this, "Nome utente o la password non corretti", "Failure", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Incorrect username or password", "Failure", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
@@ -187,7 +191,12 @@ public class LoginGUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(LoginGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
