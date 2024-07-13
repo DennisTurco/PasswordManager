@@ -8,6 +8,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.*;
 import org.json.JSONArray;
@@ -17,7 +18,6 @@ import org.json.JSONObject;
  * @author Lorenzo
  */
 public class LoginGUI extends javax.swing.JFrame {
-
     /**
      * Creates new form LoginGUI
      */
@@ -46,14 +46,23 @@ public class LoginGUI extends javax.swing.JFrame {
         Username = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         LoginButton = new javax.swing.JButton();
-        Password = new javax.swing.JTextField();
+        RegisterButton = new javax.swing.JToggleButton();
+        NoLoginButton = new javax.swing.JToggleButton();
+        Password = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Password Generator");
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setText("Password Generator login");
 
         jLabel2.setText("Password");
+
+        Username.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UsernameActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Username");
 
@@ -64,10 +73,40 @@ public class LoginGUI extends javax.swing.JFrame {
             }
         });
 
+        RegisterButton.setText("Create account");
+        RegisterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RegisterButtonActionPerformed(evt);
+            }
+        });
+
+        NoLoginButton.setText("Continue without register");
+        NoLoginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NoLoginButtonActionPerformed(evt);
+            }
+        });
+
+        Password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PasswordActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(69, 69, 69)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                .addGap(92, 92, 92))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(RegisterButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(NoLoginButton)
+                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -75,20 +114,17 @@ public class LoginGUI extends javax.swing.JFrame {
                         .addComponent(jLabel3))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(152, 152, 152)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(33, 33, 33)
-                                .addComponent(jLabel2))
-                            .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(33, 33, 33)
+                                    .addComponent(jLabel2)))
+                            .addComponent(Password, javax.swing.GroupLayout.Alignment.LEADING)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(171, 171, 171)
+                        .addGap(175, 175, 175)
                         .addComponent(LoginButton)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(69, 69, 69)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(92, 92, 92))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -101,11 +137,15 @@ public class LoginGUI extends javax.swing.JFrame {
                 .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addComponent(LoginButton)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(NoLoginButton)
+                    .addComponent(RegisterButton))
+                .addGap(17, 17, 17))
         );
 
         pack();
@@ -115,29 +155,51 @@ public class LoginGUI extends javax.swing.JFrame {
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
         // ottengo il testo
         String password = Password.getText();
-        String username = Username.getText();
+        String accountName = Username.getText();
         
         // controllo se il testo è vuoto
-        if (password.equals("") || username.equals("")) {     // testo == "" 
+        if (password.equals("") || accountName.equals("")) {     // testo == "" 
             JOptionPane.showMessageDialog(this, "Unable to log in! Enter the user and password", "Failure", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        if(!ReadAccoutToJSON(username, password)){
+        if(!ReadAccoutToJSON(accountName, password)){
             JOptionPane.showMessageDialog(this, "Incorrect username or password", "Failure", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-
-        
         //apre un nuovo frame
-        ProfileGUI profileFrame = new ProfileGUI();
-        profileFrame.setVisible(true);
+        MainGUI mainFrame = new MainGUI(accountName);
+        mainFrame.setVisible(true);
+        
         dispose();  // Chiude il frame
     }//GEN-LAST:event_LoginButtonActionPerformed
+
+    private void UsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_UsernameActionPerformed
+
+    private void RegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterButtonActionPerformed
+        //apre un nuovo frame
+        RegisterGUI registerFrame = new RegisterGUI();
+        registerFrame.setVisible(true);
+        
+        dispose();  // Chiude il frame
+    }//GEN-LAST:event_RegisterButtonActionPerformed
+
+    private void NoLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NoLoginButtonActionPerformed
+        //apre un nuovo frame
+        MainGUI mainFrame = new MainGUI(null);
+        mainFrame.setVisible(true);
+        
+        dispose();  // Chiude il frame
+    }//GEN-LAST:event_NoLoginButtonActionPerformed
+
+    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PasswordActionPerformed
     
     private boolean ReadAccoutToJSON(String username, String password){
-        String filePath = "account.json";
+        String filePath = "accounts.json";
         StringBuilder jsonData = new StringBuilder();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -152,7 +214,7 @@ public class LoginGUI extends javax.swing.JFrame {
             // Iterate through the array and get the values
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String accountName = jsonObject.getString("AccountName");
+                String accountName = jsonObject.getString("username");
                 String accountPassword = jsonObject.getString("Password");
                 
                 if(username.equals(accountName) && password.equals(accountPassword)){
@@ -168,6 +230,24 @@ public class LoginGUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    
+    private boolean authenticate(String username, String password) {
+        // Implement your authentication logic here
+        // For simplicity, assume a method checkCredentials(username, password)
+        // that returns true if the credentials are correct
+        return checkCredentials(username, password);
+    }
+
+    private void saveLoginState(String username) {
+        JSONObject loginState = new JSONObject();
+        loginState.put("username", username);
+
+        try (FileWriter fileWriter = new FileWriter("loginState.json")) {
+            fileWriter.write(loginState.toString(4));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -207,10 +287,16 @@ public class LoginGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton LoginButton;
-    private javax.swing.JTextField Password;
+    private javax.swing.JToggleButton NoLoginButton;
+    private javax.swing.JPasswordField Password;
+    private javax.swing.JToggleButton RegisterButton;
     private javax.swing.JTextField Username;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     // End of variables declaration//GEN-END:variables
+
+    private boolean checkCredentials(String username, String password) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

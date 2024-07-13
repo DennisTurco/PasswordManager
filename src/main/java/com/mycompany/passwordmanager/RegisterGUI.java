@@ -17,10 +17,7 @@ import javax.swing.UIManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- *
- * @author Lorenzo
- */
+
 public class RegisterGUI extends javax.swing.JFrame {
 
     /**
@@ -52,10 +49,12 @@ public class RegisterGUI extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         ConfirmPassword = new javax.swing.JTextField();
         RegisterButton = new javax.swing.JButton();
+        CloseButton = new javax.swing.JButton();
 
         jLabel4.setText("Password");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Password Generator");
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setText("Password Generator register");
@@ -66,6 +65,7 @@ public class RegisterGUI extends javax.swing.JFrame {
 
         jLabel5.setText("Confirm password");
 
+        RegisterButton.setBackground(new java.awt.Color(0, 102, 204));
         RegisterButton.setText("Register");
         RegisterButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -73,16 +73,25 @@ public class RegisterGUI extends javax.swing.JFrame {
             }
         });
 
+        CloseButton.setBackground(new java.awt.Color(255, 0, 0));
+        CloseButton.setText("Close");
+        CloseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CloseButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(RegisterButton)
-                .addGap(18, 18, 18))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(166, 166, 166)
+                        .addComponent(CloseButton)
+                        .addGap(30, 30, 30)
+                        .addComponent(RegisterButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(105, 105, 105)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -122,7 +131,9 @@ public class RegisterGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
-                .addComponent(RegisterButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(RegisterButton)
+                    .addComponent(CloseButton))
                 .addGap(25, 25, 25))
         );
 
@@ -131,64 +142,100 @@ public class RegisterGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void RegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterButtonActionPerformed
-        String accountName = Username.getText();
+         String username = Username.getText();
         String password = Password.getText(); 
         String confirmPassword = ConfirmPassword.getText();
         
-        if(accountName.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || !password.equals(confirmPassword)){
+        if(username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || !password.equals(confirmPassword)){
             JOptionPane.showMessageDialog(this, "Rincontrolla i parametri", "Error", JOptionPane.ERROR_MESSAGE);
         }
         else{
-            WriteAccountToJSON(accountName, password);
-            JOptionPane.showMessageDialog(this, "User " + accountName + " created sucessfully!", "User created", JOptionPane.OK_OPTION);
+            // Creare un file JSON separato per ciascun utente
+            createUserFile(username, password);
+            
+            // Aggiungere l'account al file JSON centrale
+            addUserToCentralFile(username, password);
+            
+            JOptionPane.showMessageDialog(this, "User " + username + " created successfully!", "User created", JOptionPane.OK_OPTION);
             
             dispose();  // Chiude il frame
         }
         
-
+        LoginGUI loginFrame = new LoginGUI();
+        loginFrame.setVisible(true);
     }//GEN-LAST:event_RegisterButtonActionPerformed
 
+    private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
+        dispose(); 
+    }//GEN-LAST:event_CloseButtonActionPerformed
+    /**
+     * Crea un file JSON per l'utente
+     */
+    public void createUserFile(String username, String password) {
+        // Crea un nuovo oggetto JSON con le informazioni da aggiungere
+        JSONObject newEntry = new JSONObject();
+        newEntry.put("AccountName", username);
+        newEntry.put("Password", password);
+
+        // Determina il percorso del file usando il nome dell'account
+        String filePath = username + ".json";
+        
+        try (FileWriter fileWriter = new FileWriter(filePath)) {
+            // Scrivi il JSONObject nel file
+            fileWriter.write(newEntry.toString(4)); // Il parametro 4 è per l'indentazione del JSON
+            System.out.println("Informazioni aggiunte con successo.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Aggiunge l'utente al file JSON centrale
+     */
+    public void addUserToCentralFile(String username, String password) {
+        String centralFilePath = "accounts.json";
+        JSONArray accountsArray;
+
+        // Leggi il file JSON centrale, se esiste
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(centralFilePath)));
+            accountsArray = new JSONArray(content);
+        } catch (IOException e) {
+            accountsArray = new JSONArray(); // Crea un nuovo array se il file non esiste
+        }
+
+        // Crea un nuovo oggetto JSON per l'utente
+        JSONObject newUser = new JSONObject();
+        newUser.put("username", username);
+        newUser.put("Password", password);
+
+        // Aggiungi l'utente all'array
+        accountsArray.put(newUser);
+
+        // Scrivi l'array aggiornato nel file
+        try (FileWriter fileWriter = new FileWriter(centralFilePath)) {
+            fileWriter.write(accountsArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
+            System.out.println("Utente aggiunto al file centrale con successo.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * @param args the command line arguments
      */
-    public void WriteAccountToJSON( String accountName, String password){
-        String filePath = "account.json";
-        
-
+    public void WriteAccountToJSON(String username, String password) {
         // Crea un nuovo oggetto JSON con le informazioni da aggiungere
         JSONObject newEntry = new JSONObject();
-        newEntry.put("AccountName", accountName);
+        newEntry.put("AccountName", username);
         newEntry.put("Password", password);
 
-        try {
-            File file = new File(filePath);
-            JSONArray jsonArray;
+        // Determina il percorso del file usando il nome dell'account
+        String filePath = username + ".json";
+        
 
-            // Se il file esiste, leggi il contenuto e convertilo in un JSONArray
-            if (file.exists()) {
-                String content = new String(Files.readAllBytes(Paths.get(filePath)));
-                if (content.isEmpty()) {
-                    jsonArray = new JSONArray();
-                } else {
-                    jsonArray = new JSONArray(content);
-                }
-            } else {
-                // Se il file non esiste, crea un nuovo JSONArray
-                jsonArray = new JSONArray();
-            }
-
-            // Aggiungi il nuovo oggetto JSON al JSONArray
-            jsonArray.put(newEntry);
-
-            // Scrivi il JSONArray aggiornato nel file
-            try (FileWriter fileWriter = new FileWriter(filePath)) {
-                fileWriter.write(jsonArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
-            }
-            if (accountName.isEmpty() || password.isEmpty() ) {
-            JOptionPane.showMessageDialog(this, "Inserire il testo nei campi obbligatori", "Failure", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
+        try (FileWriter fileWriter = new FileWriter(filePath)) {
+            // Scrivi il JSONObject nel file
+            fileWriter.write(newEntry.toString(4)); // Il parametro 4 è per l'indentazione del JSON
             System.out.println("Informazioni aggiunte con successo.");
         } catch (IOException e) {
             e.printStackTrace();
@@ -212,6 +259,7 @@ public class RegisterGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton CloseButton;
     private javax.swing.JTextField ConfirmPassword;
     private javax.swing.JTextField Password;
     private javax.swing.JButton RegisterButton;

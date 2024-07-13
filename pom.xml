@@ -25,7 +25,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
-        <exec.mainClass>com.mycompany.passwordmanager.PasswordManagerGUI</exec.mainClass>
+        <exec.mainClass>com.mycompany.passwordmanager.LoginGUI</exec.mainClass>
     </properties>
     <dependencies>
         <dependency>
