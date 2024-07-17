@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -23,6 +24,7 @@ import javax.swing.UIManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
 
 
 public class MainGUI extends javax.swing.JFrame {
@@ -34,6 +36,7 @@ public class MainGUI extends javax.swing.JFrame {
     public MainGUI(String username) {
         this.username = username;
         initComponents();
+        adjustMenuAlignment();
         
         //non riesco ad inserire immagini svg, non viene eliminata la password da eliminare
         
@@ -48,24 +51,42 @@ public class MainGUI extends javax.swing.JFrame {
         
         
         boolean logged = username != null;
-        LoginButton.setEnabled(!logged);
-        LogoutButton.setEnabled(logged);
+        LoginMenu.setEnabled(!logged);
+        LogoutMenu.setEnabled(logged);
+        SaveButton2.setEnabled(logged);
+        EntryListMenu.setEnabled(logged);
+        NewEntryMenu.setEnabled(logged);
+        DeletePasswordMenu.setEnabled(logged);
+        RegisterMenu.setEnabled(logged);
+        LogoutMenu2.setEnabled(logged);
         MainPanel.setEnabledAt(1, logged);
         MainPanel.setEnabledAt(2, logged);
         MainPanel.setEnabledAt(3, logged);
         
         if (logged) {
-            List<Entry> entries = GetEntryListFromJSON(null, null);
+            List<Entry> entries = GetEntryListFromJSON(null, null);     
 
             listModel = new DefaultListModel<>();
             for (Entry entry : entries) {
                 listModel.addElement(entry.toString());
             }
             PasswordsList.setModel(listModel);
+            
+            //sostituisce la parola login con il nome dell'account loggato
+            LoginMenu.setText(username);
         }
-        
     }
-
+    private void adjustMenuAlignment() {
+        // Create a horizontal glue
+        Box.Filler horizontalGlue = new Box.Filler(
+            new java.awt.Dimension(0, 0), 
+            new java.awt.Dimension(0, 0), 
+            new java.awt.Dimension(Integer.MAX_VALUE, 0)
+        );
+        
+        // Add the glue to the menu bar before the Help menu
+        jMenuBar1.add(horizontalGlue, 3); // Insert at the correct position
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -90,9 +111,7 @@ public class MainGUI extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         SaveButton2 = new javax.swing.JToggleButton();
         SecurityPassword = new javax.swing.JLabel();
-        LoginButton = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
-        LogoutButton = new javax.swing.JButton();
         NewEntryPanel = new javax.swing.JPanel();
         Password = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -118,12 +137,22 @@ public class MainGUI extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         PasswordToDelete = new javax.swing.JTextField();
         DeletePasswordButton = new javax.swing.JButton();
-        CreditsPanel = new javax.swing.JPanel();
-        jLabel11 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        EntryListMenu = new javax.swing.JMenu();
+        PasswordGeneratorMenu = new javax.swing.JMenuItem();
+        NewEntryMenu = new javax.swing.JMenuItem();
+        EntryListMenu2 = new javax.swing.JMenuItem();
+        DeletePasswordMenu = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        LoginMenu2 = new javax.swing.JMenuItem();
+        LogoutMenu2 = new javax.swing.JMenuItem();
+        RegisterMenu = new javax.swing.JMenuItem();
+        CreditsMenu = new javax.swing.JMenu();
+        MyGitHub = new javax.swing.JMenuItem();
+        MyFacebook = new javax.swing.JMenuItem();
+        MyLinkedin = new javax.swing.JMenuItem();
+        LoginMenu = new javax.swing.JMenu();
+        LogoutMenu = new javax.swing.JMenu();
 
         SavePasswordButton.setText("Save a password");
         SavePasswordButton.addActionListener(new java.awt.event.ActionListener() {
@@ -143,7 +172,6 @@ public class MainGUI extends javax.swing.JFrame {
         jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Password Generator");
 
         PasswordGeneratorPanel.setBackground(new java.awt.Color(51, 51, 51));
         PasswordGeneratorPanel.setForeground(new java.awt.Color(51, 51, 51));
@@ -182,24 +210,8 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
-        LoginButton.setText("Login");
-        LoginButton.setToolTipText("Login");
-        LoginButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LoginButtonActionPerformed(evt);
-            }
-        });
-
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel8.setText("Password generator");
-
-        LogoutButton.setText("Logout");
-        LogoutButton.setToolTipText("Logout");
-        LogoutButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LogoutButtonActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout PasswordGeneratorPanelLayout = new javax.swing.GroupLayout(PasswordGeneratorPanel);
         PasswordGeneratorPanel.setLayout(PasswordGeneratorPanelLayout);
@@ -210,11 +222,7 @@ public class MainGUI extends javax.swing.JFrame {
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
                         .addComponent(jLabel8)
-                        .addGap(97, 97, 97)
-                        .addComponent(LogoutButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(LoginButton)
-                        .addGap(19, 19, 19))
+                        .addGap(274, 274, 274))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
                         .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
@@ -250,11 +258,8 @@ public class MainGUI extends javax.swing.JFrame {
             PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(LoginButton)
-                    .addComponent(LogoutButton))
-                .addGap(28, 28, 28)
+                .addComponent(jLabel8)
+                .addGap(31, 31, 31)
                 .addComponent(jLabel7)
                 .addGap(18, 18, 18)
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -393,7 +398,7 @@ public class MainGUI extends javax.swing.JFrame {
                     .addGroup(NewEntryPanelLayout.createSequentialGroup()
                         .addGap(45, 45, 45)
                         .addComponent(jLabel5)))
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(102, Short.MAX_VALUE))
         );
 
         MainPanel.addTab("New entry", NewEntryPanel);
@@ -451,7 +456,7 @@ public class MainGUI extends javax.swing.JFrame {
                     .addComponent(PasswordSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
         );
 
         MainPanel.addTab("Entry list", EntryListPanel);
@@ -500,70 +505,109 @@ public class MainGUI extends javax.swing.JFrame {
                 .addComponent(PasswordToDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(DeletePasswordButton)
-                .addContainerGap(282, Short.MAX_VALUE))
+                .addContainerGap(262, Short.MAX_VALUE))
         );
 
         MainPanel.addTab("Delete password", DeletePasswordPanel);
 
-        CreditsPanel.setBackground(new java.awt.Color(51, 51, 51));
+        EntryListMenu.setText("Operations");
 
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel11.setText("Visit my profile!");
+        PasswordGeneratorMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        PasswordGeneratorMenu.setText("Password generator");
+        PasswordGeneratorMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PasswordGeneratorMenuActionPerformed(evt);
+            }
+        });
+        EntryListMenu.add(PasswordGeneratorMenu);
 
-        jButton2.setBackground(new java.awt.Color(51, 51, 51));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/fecebookLogo.jpg"))); // NOI18N
+        NewEntryMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        NewEntryMenu.setText("New entry");
+        NewEntryMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NewEntryMenuActionPerformed(evt);
+            }
+        });
+        EntryListMenu.add(NewEntryMenu);
 
-        jButton3.setBackground(new java.awt.Color(51, 51, 51));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/linkedin.png"))); // NOI18N
+        EntryListMenu2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        EntryListMenu2.setText("Entry list");
+        EntryListMenu2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EntryListMenu2ActionPerformed(evt);
+            }
+        });
+        EntryListMenu.add(EntryListMenu2);
 
-        jButton4.setBackground(new java.awt.Color(51, 51, 51));
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/github.png"))); // NOI18N
+        DeletePasswordMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        DeletePasswordMenu.setText("Delete password");
+        DeletePasswordMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeletePasswordMenuActionPerformed(evt);
+            }
+        });
+        EntryListMenu.add(DeletePasswordMenu);
 
-        jButton5.setBackground(new java.awt.Color(51, 51, 51));
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/mail.png"))); // NOI18N
+        jMenuBar1.add(EntryListMenu);
 
-        javax.swing.GroupLayout CreditsPanelLayout = new javax.swing.GroupLayout(CreditsPanel);
-        CreditsPanel.setLayout(CreditsPanelLayout);
-        CreditsPanelLayout.setHorizontalGroup(
-            CreditsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CreditsPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton5)
-                .addGap(295, 295, 295))
-            .addGroup(CreditsPanelLayout.createSequentialGroup()
-                .addGap(145, 145, 145)
-                .addComponent(jButton2)
-                .addGap(54, 54, 54)
-                .addGroup(CreditsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(284, Short.MAX_VALUE))
-            .addGroup(CreditsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(CreditsPanelLayout.createSequentialGroup()
-                    .addGap(26, 26, 26)
-                    .addComponent(jButton4)
-                    .addContainerGap(626, Short.MAX_VALUE)))
-        );
-        CreditsPanelLayout.setVerticalGroup(
-            CreditsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(CreditsPanelLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel11)
-                .addGap(58, 58, 58)
-                .addGroup(CreditsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton3)
-                    .addComponent(jButton2))
-                .addGap(59, 59, 59)
-                .addComponent(jButton5)
-                .addContainerGap(157, Short.MAX_VALUE))
-            .addGroup(CreditsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(CreditsPanelLayout.createSequentialGroup()
-                    .addGap(112, 112, 112)
-                    .addComponent(jButton4)
-                    .addContainerGap(293, Short.MAX_VALUE)))
-        );
+        jMenu2.setText("Account");
 
-        MainPanel.addTab("Credits", CreditsPanel);
+        LoginMenu2.setText("Login");
+        LoginMenu2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LoginMenu2ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(LoginMenu2);
+
+        LogoutMenu2.setText("Logout");
+        LogoutMenu2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogoutMenu2ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(LogoutMenu2);
+
+        RegisterMenu.setText("Register");
+        RegisterMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RegisterMenuActionPerformed(evt);
+            }
+        });
+        jMenu2.add(RegisterMenu);
+
+        jMenuBar1.add(jMenu2);
+
+        CreditsMenu.setText("Credits");
+
+        MyGitHub.setText("My GitHub");
+        CreditsMenu.add(MyGitHub);
+
+        MyFacebook.setText("My Facebook");
+        CreditsMenu.add(MyFacebook);
+
+        MyLinkedin.setText("My Linkedin");
+        CreditsMenu.add(MyLinkedin);
+
+        jMenuBar1.add(CreditsMenu);
+
+        LoginMenu.setText("Login");
+        LoginMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LoginMenuActionPerformed(evt);
+            }
+        });
+        jMenuBar1.add(LoginMenu);
+
+        LogoutMenu.setText("Logout");
+        LogoutMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogoutMenuActionPerformed(evt);
+            }
+        });
+        jMenuBar1.add(LogoutMenu);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -585,6 +629,7 @@ public class MainGUI extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+        
     private void SavePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SavePasswordButtonActionPerformed
         WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText());
         JOptionPane.showMessageDialog(this, "Password saved successfully!", "Password saved", JOptionPane.OK_OPTION);
@@ -596,6 +641,36 @@ public class MainGUI extends javax.swing.JFrame {
         
     }//GEN-LAST:event_SeePasswordsButtonActionPerformed
 
+    private void DeletePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeletePasswordButtonActionPerformed
+        String passwordToDelete = PasswordToDelete.getText().trim();
+
+        // Ottieni la lista aggiornata delle voci escludendo quella da eliminare
+        List<Entry> updatedEntries = GetEntryListFromJSON(null, passwordToDelete);
+
+        // Se la lista è stata correttamente aggiornata, visualizzala
+        if (updatedEntries != null) {
+            displayEntries(updatedEntries);
+
+            // Aggiorna il file JSON con le voci aggiornate (opzionale, se necessario)
+            saveEntriesToJson(updatedEntries);
+            JOptionPane.showMessageDialog(this, "Password delete succesfully!.", "Password delete", JOptionPane.OK_OPTION);
+
+        } else {
+            // Gestisci il caso in cui non sia stato possibile ottenere le voci aggiornate
+            JOptionPane.showMessageDialog(this, "Error deleting password.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_DeletePasswordButtonActionPerformed
+
+    private void PasswordSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PasswordSearchActionPerformed
+
+    private void PasswordSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordSearchButtonActionPerformed
+        String passwordSearch = PasswordSearch.getText().trim();
+        List<Entry> filteredEntries = GetEntryListFromJSON(passwordSearch, null);
+        displayEntries(filteredEntries);
+    }//GEN-LAST:event_PasswordSearchButtonActionPerformed
+
     private void EmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_EmailActionPerformed
@@ -606,8 +681,107 @@ public class MainGUI extends javax.swing.JFrame {
         if (isUserLoggedIn()) {
             displayEntries(null);
         }
-        
+
     }//GEN-LAST:event_SaveButtonActionPerformed
+
+    private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
+        dispose();  // Chiude il frame
+    }//GEN-LAST:event_CancelButtonActionPerformed
+
+    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
+        String enteredPassword = Password.getText();
+
+        // Calcolare la forza della password digitata
+        int strength = calculatePasswordStrength(enteredPassword);
+        String strengthText = getStrengthText(strength); // Funzione per ottenere il testo descrittivo della forza
+
+        // Aggiornare la JLabel con la forza calcolata
+        SecurityPassword2.setText("Password Strength: " + strengthText);
+    }//GEN-LAST:event_PasswordActionPerformed
+
+    private void SaveButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButton2ActionPerformed
+        MainPanel.setSelectedComponent(NewEntryPanel);
+    }//GEN-LAST:event_SaveButton2ActionPerformed
+
+    private void GeneratePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GeneratePasswordButtonActionPerformed
+        Integer passwordSize = (Integer) PasswordSize.getValue();
+
+        boolean useLower = LowercaseLetters.isSelected();
+        boolean useUpper = Uppercase.isSelected();
+        boolean useNumbers = Numbers.isSelected();
+        boolean useSymbols = Symbol.isSelected();
+
+        String generatedPassword = generatePassword(passwordSize, useLower, useUpper, useNumbers, useSymbols);
+
+        if (generatedPassword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Seleziona almeno un'opzione per generare la password.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        OutputPassword.setText(generatedPassword);
+
+        // Calcolare la forza della password generata
+        int strength = calculatePasswordStrength(generatedPassword);
+        String strengthText = getStrengthText(strength); // Funzione per ottenere il testo descrittivo della forza
+
+        // Aggiornare la JLabel con la forza calcolata
+        SecurityPassword.setText("Password Strength: " + strengthText);
+    }//GEN-LAST:event_GeneratePasswordButtonActionPerformed
+
+    private void OutputPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OutputPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_OutputPasswordActionPerformed
+
+    private void LoginMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginMenuActionPerformed
+        LoginGUI loginFrame = new LoginGUI();
+        loginFrame.setVisible(true);
+
+        dispose();
+    }//GEN-LAST:event_LoginMenuActionPerformed
+
+    private void EntryListMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EntryListMenu2ActionPerformed
+       MainPanel.setSelectedComponent(EntryListPanel);
+    }//GEN-LAST:event_EntryListMenu2ActionPerformed
+
+    private void NewEntryMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewEntryMenuActionPerformed
+        MainPanel.setSelectedComponent(NewEntryPanel);
+    }//GEN-LAST:event_NewEntryMenuActionPerformed
+
+    private void PasswordGeneratorMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordGeneratorMenuActionPerformed
+        MainPanel.setSelectedComponent(PasswordGeneratorPanel);
+    }//GEN-LAST:event_PasswordGeneratorMenuActionPerformed
+
+    private void LogoutMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutMenuActionPerformed
+        LoginGUI loginFrame = new LoginGUI();
+        loginFrame.setVisible(true);
+
+        dispose();
+    }//GEN-LAST:event_LogoutMenuActionPerformed
+
+    private void DeletePasswordMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeletePasswordMenuActionPerformed
+        MainPanel.setSelectedComponent(DeletePasswordPanel);
+    }//GEN-LAST:event_DeletePasswordMenuActionPerformed
+
+    private void LoginMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginMenu2ActionPerformed
+        LoginGUI loginFrame = new LoginGUI();
+        loginFrame.setVisible(true);
+
+        dispose();
+    }//GEN-LAST:event_LoginMenu2ActionPerformed
+
+    private void LogoutMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutMenu2ActionPerformed
+        LoginGUI loginFrame = new LoginGUI();
+        loginFrame.setVisible(true);
+
+        dispose();
+    }//GEN-LAST:event_LogoutMenu2ActionPerformed
+
+    private void RegisterMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterMenuActionPerformed
+        RegisterGUI registerFrame = new RegisterGUI();
+        registerFrame.setVisible(true);
+
+        dispose();
+    }//GEN-LAST:event_RegisterMenuActionPerformed
     public void WritePasswordToJSON(String accountName, String email, String password, String note) {
         String filePath = username + ".json";
 
@@ -705,98 +879,6 @@ public class MainGUI extends javax.swing.JFrame {
         return username != null && !username.isEmpty();
     }
 
-
-    private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
-        dispose();  // Chiude il frame
-    }//GEN-LAST:event_CancelButtonActionPerformed
-
-    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
-        String enteredPassword = Password.getText();
-
-        // Calcolare la forza della password digitata
-        int strength = calculatePasswordStrength(enteredPassword);
-        String strengthText = getStrengthText(strength); // Funzione per ottenere il testo descrittivo della forza
-
-        // Aggiornare la JLabel con la forza calcolata
-        SecurityPassword2.setText("Password Strength: " + strengthText);
-    }//GEN-LAST:event_PasswordActionPerformed
-
-    private void OutputPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OutputPasswordActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_OutputPasswordActionPerformed
-
-    private void GeneratePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GeneratePasswordButtonActionPerformed
-        Integer passwordSize = (Integer) PasswordSize.getValue();
-
-        boolean useLower = LowercaseLetters.isSelected();
-        boolean useUpper = Uppercase.isSelected();
-        boolean useNumbers = Numbers.isSelected();
-        boolean useSymbols = Symbol.isSelected();
-
-        String generatedPassword = generatePassword(passwordSize, useLower, useUpper, useNumbers, useSymbols);
-
-        if (generatedPassword.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Seleziona almeno un'opzione per generare la password.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        OutputPassword.setText(generatedPassword);
-
-        // Calcolare la forza della password generata
-        int strength = calculatePasswordStrength(generatedPassword);
-        String strengthText = getStrengthText(strength); // Funzione per ottenere il testo descrittivo della forza
-
-        // Aggiornare la JLabel con la forza calcolata
-        SecurityPassword.setText("Password Strength: " + strengthText);
-    }//GEN-LAST:event_GeneratePasswordButtonActionPerformed
-
-    private void PasswordSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordSearchButtonActionPerformed
-        String passwordSearch = PasswordSearch.getText().trim();
-        List<Entry> filteredEntries = GetEntryListFromJSON(passwordSearch, null);
-        displayEntries(filteredEntries);   
-    }//GEN-LAST:event_PasswordSearchButtonActionPerformed
-
-    private void PasswordSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_PasswordSearchActionPerformed
-
-    private void SaveButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButton2ActionPerformed
-        MainPanel.setSelectedComponent(NewEntryPanel);
-    }//GEN-LAST:event_SaveButton2ActionPerformed
-
-    private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
-        LoginGUI loginFrame = new LoginGUI();
-        loginFrame.setVisible(true);
-        
-        dispose();
-    }//GEN-LAST:event_LoginButtonActionPerformed
-
-    private void LogoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutButtonActionPerformed
-        LoginGUI loginFrame = new LoginGUI();
-        loginFrame.setVisible(true);
-        
-        dispose();
-    }//GEN-LAST:event_LogoutButtonActionPerformed
-
-    private void DeletePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeletePasswordButtonActionPerformed
-        String passwordToDelete = PasswordToDelete.getText().trim();
-
-        // Ottieni la lista aggiornata delle voci escludendo quella da eliminare
-        List<Entry> updatedEntries = GetEntryListFromJSON(null, passwordToDelete);
-
-        // Se la lista è stata correttamente aggiornata, visualizzala
-        if (updatedEntries != null) {
-            displayEntries(updatedEntries);
-
-            // Aggiorna il file JSON con le voci aggiornate (opzionale, se necessario)
-            saveEntriesToJson(updatedEntries);
-            JOptionPane.showMessageDialog(this, "Password delete succesfully!.", "Password delete", JOptionPane.OK_OPTION);
-
-        } else {
-            // Gestisci il caso in cui non sia stato possibile ottenere le voci aggiornate
-            JOptionPane.showMessageDialog(this, "Error deleting password.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_DeletePasswordButtonActionPerformed
     
     // Metodo per salvare le voci aggiornate nel file JSON (opzionale, se necessario)
     private void saveEntriesToJson(List<Entry> entries) {
@@ -918,27 +1000,38 @@ public class MainGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField AccountName;
     private javax.swing.JButton CancelButton;
-    private javax.swing.JPanel CreditsPanel;
+    private javax.swing.JMenu CreditsMenu;
     private javax.swing.JButton DeletePasswordButton;
+    private javax.swing.JMenuItem DeletePasswordMenu;
     private javax.swing.JPanel DeletePasswordPanel;
     private javax.swing.JTextField Email;
+    private javax.swing.JMenu EntryListMenu;
+    private javax.swing.JMenuItem EntryListMenu2;
     private javax.swing.JPanel EntryListPanel;
     private javax.swing.JButton GeneratePasswordButton;
-    private javax.swing.JButton LoginButton;
-    private javax.swing.JButton LogoutButton;
+    private javax.swing.JMenu LoginMenu;
+    private javax.swing.JMenuItem LoginMenu2;
+    private javax.swing.JMenu LogoutMenu;
+    private javax.swing.JMenuItem LogoutMenu2;
     private javax.swing.JCheckBox LowercaseLetters;
     private javax.swing.JTabbedPane MainPanel;
+    private javax.swing.JMenuItem MyFacebook;
+    private javax.swing.JMenuItem MyGitHub;
+    private javax.swing.JMenuItem MyLinkedin;
+    private javax.swing.JMenuItem NewEntryMenu;
     private javax.swing.JPanel NewEntryPanel;
     private javax.swing.JTextArea Note;
     private javax.swing.JCheckBox Numbers;
     private javax.swing.JTextField OutputPassword;
     private javax.swing.JTextField Password;
+    private javax.swing.JMenuItem PasswordGeneratorMenu;
     private javax.swing.JPanel PasswordGeneratorPanel;
     private javax.swing.JTextField PasswordSearch;
     private javax.swing.JButton PasswordSearchButton;
     private javax.swing.JSpinner PasswordSize;
     private javax.swing.JTextField PasswordToDelete;
     private javax.swing.JList<String> PasswordsList;
+    private javax.swing.JMenuItem RegisterMenu;
     private javax.swing.JButton SaveButton;
     private javax.swing.JToggleButton SaveButton2;
     private javax.swing.JButton SavePasswordButton;
@@ -947,13 +1040,8 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JToggleButton SeePasswordsButton;
     private javax.swing.JCheckBox Symbol;
     private javax.swing.JCheckBox Uppercase;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -962,6 +1050,8 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

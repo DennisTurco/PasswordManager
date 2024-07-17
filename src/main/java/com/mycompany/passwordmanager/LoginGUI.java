@@ -153,25 +153,23 @@ public class LoginGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void LoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginButtonActionPerformed
-        // ottengo il testo
-        String password = Password.getText();
+        String password = new String(Password.getPassword());
         String accountName = Username.getText();
-        
-        // controllo se il testo è vuoto
-        if (password.equals("") || accountName.equals("")) {     // testo == "" 
+
+        if (password.isEmpty() || accountName.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Unable to log in! Enter the user and password", "Failure", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         if(!ReadAccoutToJSON(accountName, password)){
             JOptionPane.showMessageDialog(this, "Incorrect username or password", "Failure", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        //apre un nuovo frame
+
         MainGUI mainFrame = new MainGUI(accountName);
         mainFrame.setVisible(true);
-        
-        dispose();  // Chiude il frame
+
+        dispose();  // Chiude il frame corrente
     }//GEN-LAST:event_LoginButtonActionPerformed
 
     private void UsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsernameActionPerformed
