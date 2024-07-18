@@ -5,12 +5,15 @@
 package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.Desktop;
 import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
@@ -53,11 +56,12 @@ public class MainGUI extends javax.swing.JFrame {
         boolean logged = username != null;
         LoginMenu.setEnabled(!logged);
         LogoutMenu.setEnabled(logged);
+        LoginMenu2.setEnabled(!logged);
         SaveButton2.setEnabled(logged);
         EntryListMenu.setEnabled(logged);
         NewEntryMenu.setEnabled(logged);
         DeletePasswordMenu.setEnabled(logged);
-        RegisterMenu.setEnabled(logged);
+        RegisterMenu.setEnabled(!logged);
         LogoutMenu2.setEnabled(logged);
         MainPanel.setEnabledAt(1, logged);
         MainPanel.setEnabledAt(2, logged);
@@ -75,6 +79,8 @@ public class MainGUI extends javax.swing.JFrame {
             //sostituisce la parola login con il nome dell'account loggato
             LoginMenu.setText(username);
         }
+        
+        
     }
     private void adjustMenuAlignment() {
         // Create a horizontal glue
@@ -226,13 +232,13 @@ public class MainGUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
                         .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
-                                .addGap(0, 288, Short.MAX_VALUE)
+                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(OutputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PasswordGeneratorPanelLayout.createSequentialGroup()
                                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(Symbol, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(LowercaseLetters, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(0, 329, Short.MAX_VALUE)))
                         .addGap(18, 18, 18)
                         .addComponent(SaveButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(205, 205, 205))
@@ -355,7 +361,7 @@ public class MainGUI extends javax.swing.JFrame {
                             .addComponent(AccountName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(SecurityPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(NewEntryPanelLayout.createSequentialGroup()
@@ -435,7 +441,7 @@ public class MainGUI extends javax.swing.JFrame {
         EntryListPanelLayout.setHorizontalGroup(
             EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(EntryListPanelLayout.createSequentialGroup()
-                .addContainerGap(282, Short.MAX_VALUE)
+                .addContainerGap(255, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(81, 81, 81)
                 .addComponent(PasswordSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -492,7 +498,7 @@ public class MainGUI extends javax.swing.JFrame {
                     .addGroup(DeletePasswordPanelLayout.createSequentialGroup()
                         .addGap(314, 314, 314)
                         .addComponent(DeletePasswordButton)))
-                .addContainerGap(283, Short.MAX_VALUE))
+                .addContainerGap(256, Short.MAX_VALUE))
         );
         DeletePasswordPanelLayout.setVerticalGroup(
             DeletePasswordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -513,6 +519,7 @@ public class MainGUI extends javax.swing.JFrame {
         EntryListMenu.setText("Operations");
 
         PasswordGeneratorMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        PasswordGeneratorMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/PasswordGenerator.png"))); // NOI18N
         PasswordGeneratorMenu.setText("Password generator");
         PasswordGeneratorMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -522,6 +529,7 @@ public class MainGUI extends javax.swing.JFrame {
         EntryListMenu.add(PasswordGeneratorMenu);
 
         NewEntryMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        NewEntryMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add-security.png"))); // NOI18N
         NewEntryMenu.setText("New entry");
         NewEntryMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -531,6 +539,7 @@ public class MainGUI extends javax.swing.JFrame {
         EntryListMenu.add(NewEntryMenu);
 
         EntryListMenu2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        EntryListMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/list.png"))); // NOI18N
         EntryListMenu2.setText("Entry list");
         EntryListMenu2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -540,6 +549,7 @@ public class MainGUI extends javax.swing.JFrame {
         EntryListMenu.add(EntryListMenu2);
 
         DeletePasswordMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        DeletePasswordMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
         DeletePasswordMenu.setText("Delete password");
         DeletePasswordMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -552,6 +562,7 @@ public class MainGUI extends javax.swing.JFrame {
 
         jMenu2.setText("Account");
 
+        LoginMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Login.png"))); // NOI18N
         LoginMenu2.setText("Login");
         LoginMenu2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -560,6 +571,7 @@ public class MainGUI extends javax.swing.JFrame {
         });
         jMenu2.add(LoginMenu2);
 
+        LogoutMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Logout.png"))); // NOI18N
         LogoutMenu2.setText("Logout");
         LogoutMenu2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -568,6 +580,7 @@ public class MainGUI extends javax.swing.JFrame {
         });
         jMenu2.add(LogoutMenu2);
 
+        RegisterMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/UserRegister.png"))); // NOI18N
         RegisterMenu.setText("Register");
         RegisterMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -580,17 +593,36 @@ public class MainGUI extends javax.swing.JFrame {
 
         CreditsMenu.setText("Credits");
 
+        MyGitHub.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/github.png"))); // NOI18N
         MyGitHub.setText("My GitHub");
+        MyGitHub.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyGitHubActionPerformed(evt);
+            }
+        });
         CreditsMenu.add(MyGitHub);
 
+        MyFacebook.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/facebook.png"))); // NOI18N
         MyFacebook.setText("My Facebook");
+        MyFacebook.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyFacebookActionPerformed(evt);
+            }
+        });
         CreditsMenu.add(MyFacebook);
 
+        MyLinkedin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/linkedin.png"))); // NOI18N
         MyLinkedin.setText("My Linkedin");
+        MyLinkedin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyLinkedinActionPerformed(evt);
+            }
+        });
         CreditsMenu.add(MyLinkedin);
 
         jMenuBar1.add(CreditsMenu);
 
+        LoginMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Login.png"))); // NOI18N
         LoginMenu.setText("Login");
         LoginMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -599,6 +631,7 @@ public class MainGUI extends javax.swing.JFrame {
         });
         jMenuBar1.add(LoginMenu);
 
+        LogoutMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Logout.png"))); // NOI18N
         LogoutMenu.setText("Logout");
         LogoutMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -782,6 +815,57 @@ public class MainGUI extends javax.swing.JFrame {
 
         dispose();
     }//GEN-LAST:event_RegisterMenuActionPerformed
+
+    private void MyGitHubActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyGitHubActionPerformed
+         // URL del sito web da aprire
+                String url = "https://github.com/LorenzoBertinelli";
+                
+                // Tentativo di aprire il sito web nel browser predefinito
+                if (Desktop.isDesktopSupported()) {
+                    Desktop desktop = Desktop.getDesktop();
+                    try {
+                        desktop.browse(new URI(url));
+                    } catch (IOException | URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    System.err.println("Desktop non supportato. Impossibile aprire il sito web.");
+                }
+    }//GEN-LAST:event_MyGitHubActionPerformed
+
+    private void MyFacebookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyFacebookActionPerformed
+         // URL del sito web da aprire
+                String url = "https://www.facebook.com/profile.php?id=100073820334511&locale=it_IT";
+                
+                // Tentativo di aprire il sito web nel browser predefinito
+                if (Desktop.isDesktopSupported()) {
+                    Desktop desktop = Desktop.getDesktop();
+                    try {
+                        desktop.browse(new URI(url));
+                    } catch (IOException | URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    System.err.println("Desktop non supportato. Impossibile aprire il sito web.");
+                }
+    }//GEN-LAST:event_MyFacebookActionPerformed
+
+    private void MyLinkedinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyLinkedinActionPerformed
+        // URL del sito web da aprire
+                String url = "https://www.linkedin.com/in/lorenzo-bertinelli-822718310/";
+                
+                // Tentativo di aprire il sito web nel browser predefinito
+                if (Desktop.isDesktopSupported()) {
+                    Desktop desktop = Desktop.getDesktop();
+                    try {
+                        desktop.browse(new URI(url));
+                    } catch (IOException | URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    System.err.println("Desktop non supportato. Impossibile aprire il sito web.");
+                }
+    }//GEN-LAST:event_MyLinkedinActionPerformed
     public void WritePasswordToJSON(String accountName, String email, String password, String note) {
         String filePath = username + ".json";
 
