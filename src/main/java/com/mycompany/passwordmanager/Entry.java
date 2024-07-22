@@ -35,6 +35,6 @@ public class Entry {
 
     @Override
     public String toString() {
-        return "Account: " + accountName + ", Email: " + email + ", Password: " + password + ", Note: " + note;
+        return accountName + password  + email  + note;
     }
 }
