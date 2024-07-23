@@ -4,10 +4,7 @@
  */
 package com.mycompany.passwordmanager;
 
-/**
- *
- * @author Lorenzo
- */
+
 public interface TableActionEvent {
     public void onEdit(int row);
 

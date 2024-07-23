@@ -5,6 +5,8 @@
 package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Image;
 import java.io.BufferedReader;
@@ -27,7 +29,11 @@ import javax.swing.UIManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 
 public class MainGUI extends javax.swing.JFrame {
@@ -58,15 +64,12 @@ public class MainGUI extends javax.swing.JFrame {
         LogoutMenu2.setEnabled(logged);
         MainPanel.setEnabledAt(1, logged);
         MainPanel.setEnabledAt(2, logged);
-        MainPanel.setEnabledAt(3, logged);
         
         if (logged) {
             List<Entry> entries = GetEntryListFromJSON(null, null);
 
-           //displayEntries(entries);
-           
-           PasswordTable.getColumnModel().getColumn(4).setCellRenderer(new TableActionCellRender());
-           
+           displayEntries(entries);
+
            
             // Sostituisce la parola login con il nome dell'account loggato
             LoginMenu.setText(username);
@@ -126,14 +129,9 @@ public class MainGUI extends javax.swing.JFrame {
         EntryListPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         PasswordSearchButton = new javax.swing.JButton();
-        PasswordSearch = new javax.swing.JTextField();
+        AccountSearch = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         PasswordTable = new javax.swing.JTable();
-        DeletePasswordPanel = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        PasswordToDelete = new javax.swing.JTextField();
-        DeletePasswordButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         EntryListMenu = new javax.swing.JMenu();
         PasswordGeneratorMenu = new javax.swing.JMenuItem();
@@ -223,9 +221,6 @@ public class MainGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(274, 274, 274))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
                         .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -234,7 +229,7 @@ public class MainGUI extends javax.swing.JFrame {
                                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(Symbol, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(LowercaseLetters, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addGap(0, 340, Short.MAX_VALUE)))
+                                .addGap(340, 340, 340)))
                         .addGap(18, 18, 18)
                         .addComponent(SaveButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(205, 205, 205))
@@ -247,21 +242,22 @@ public class MainGUI extends javax.swing.JFrame {
                             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
                                 .addGap(261, 261, 261)
                                 .addComponent(SecurityPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8))
+                        .addGap(274, 274, 274))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
-                        .addComponent(GeneratePasswordButton)
-                        .addGap(280, 280, 280))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
-                        .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(317, 317, 317))))
+                .addComponent(GeneratePasswordButton)
+                .addGap(280, 280, 280))
         );
         PasswordGeneratorPanelLayout.setVerticalGroup(
             PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addContainerGap()
                 .addComponent(jLabel8)
                 .addGap(31, 31, 31)
                 .addComponent(jLabel7)
@@ -269,13 +265,13 @@ public class MainGUI extends javax.swing.JFrame {
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Symbol)
                     .addComponent(Uppercase))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(4, 4, 4)
                 .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
+                .addGap(4, 4, 4)
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LowercaseLetters)
                     .addComponent(Numbers))
-                .addGap(54, 54, 54)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(OutputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SaveButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -424,9 +420,14 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
-        PasswordSearch.addActionListener(new java.awt.event.ActionListener() {
+        AccountSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PasswordSearchActionPerformed(evt);
+                AccountSearchActionPerformed(evt);
+            }
+        });
+        AccountSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                EntrySearch(evt);
             }
         });
 
@@ -435,12 +436,22 @@ public class MainGUI extends javax.swing.JFrame {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
                 {null, null, null, null, null},
+                {null, null, null, null, null},
                 {null, null, null, null, null}
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4", "Actions"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        PasswordTable.setRowHeight(50);
         jScrollPane3.setViewportView(PasswordTable);
 
         javax.swing.GroupLayout EntryListPanelLayout = new javax.swing.GroupLayout(EntryListPanel);
@@ -451,7 +462,7 @@ public class MainGUI extends javax.swing.JFrame {
                 .addContainerGap(266, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(81, 81, 81)
-                .addComponent(PasswordSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(AccountSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PasswordSearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
@@ -463,63 +474,15 @@ public class MainGUI extends javax.swing.JFrame {
                 .addGap(11, 11, 11)
                 .addGroup(EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(PasswordSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(AccountSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1))
                     .addComponent(PasswordSearchButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         MainPanel.addTab("Entry list", EntryListPanel);
-
-        DeletePasswordPanel.setBackground(new java.awt.Color(51, 51, 51));
-
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel9.setText("Delete password");
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setText("Enter  the password to delete:");
-
-        DeletePasswordButton.setBackground(new java.awt.Color(255, 0, 0));
-        DeletePasswordButton.setText("Delete");
-        DeletePasswordButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DeletePasswordButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout DeletePasswordPanelLayout = new javax.swing.GroupLayout(DeletePasswordPanel);
-        DeletePasswordPanel.setLayout(DeletePasswordPanelLayout);
-        DeletePasswordPanelLayout.setHorizontalGroup(
-            DeletePasswordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(DeletePasswordPanelLayout.createSequentialGroup()
-                .addGroup(DeletePasswordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(DeletePasswordPanelLayout.createSequentialGroup()
-                        .addGap(260, 260, 260)
-                        .addGroup(DeletePasswordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(PasswordToDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(DeletePasswordPanelLayout.createSequentialGroup()
-                        .addGap(314, 314, 314)
-                        .addComponent(DeletePasswordButton)))
-                .addContainerGap(267, Short.MAX_VALUE))
-        );
-        DeletePasswordPanelLayout.setVerticalGroup(
-            DeletePasswordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(DeletePasswordPanelLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jLabel9)
-                .addGap(46, 46, 46)
-                .addComponent(jLabel10)
-                .addGap(18, 18, 18)
-                .addComponent(PasswordToDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(DeletePasswordButton)
-                .addContainerGap(316, Short.MAX_VALUE))
-        );
-
-        MainPanel.addTab("Delete password", DeletePasswordPanel);
 
         EntryListMenu.setText("Operations");
 
@@ -694,33 +657,13 @@ public class MainGUI extends javax.swing.JFrame {
         
     }//GEN-LAST:event_SeePasswordsButtonActionPerformed
 
-    private void DeletePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeletePasswordButtonActionPerformed
-        String passwordToDelete = PasswordToDelete.getText().trim();
-
-        // Ottieni la lista aggiornata delle voci escludendo quella da eliminare
-        List<Entry> updatedEntries = GetEntryListFromJSON(null, passwordToDelete);
-
-        // Se la lista è stata correttamente aggiornata, visualizzala
-        if (updatedEntries != null) {
-            displayEntries(updatedEntries);
-
-            // Aggiorna il file JSON con le voci aggiornate (opzionale, se necessario)
-            saveEntriesToJson(updatedEntries);
-            JOptionPane.showMessageDialog(this, "Password delete succesfully!.", "Password delete", JOptionPane.OK_OPTION);
-
-        } else {
-            // Gestisci il caso in cui non sia stato possibile ottenere le voci aggiornate
-            JOptionPane.showMessageDialog(this, "Error deleting password.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_DeletePasswordButtonActionPerformed
-
-    private void PasswordSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordSearchActionPerformed
+    private void AccountSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AccountSearchActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_PasswordSearchActionPerformed
+    }//GEN-LAST:event_AccountSearchActionPerformed
 
     private void PasswordSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordSearchButtonActionPerformed
-        String passwordSearch = PasswordSearch.getText().trim();
-        List<Entry> filteredEntries = GetEntryListFromJSON(passwordSearch, null);
+       String accountSearch = AccountSearch.getText().trim();
+        List<Entry> filteredEntries = GetEntryListFromJSON(accountSearch, null);
         displayEntries(filteredEntries);
     }//GEN-LAST:event_PasswordSearchButtonActionPerformed
 
@@ -732,8 +675,14 @@ public class MainGUI extends javax.swing.JFrame {
         WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText());
         JOptionPane.showMessageDialog(this, "Password saved successfully!", "Password saved", JOptionPane.OK_OPTION);
         if (isUserLoggedIn()) {
-            displayEntries(null);
+            List<Entry> updatedEntries = GetEntryListFromJSON(null, null);
+            displayEntries(updatedEntries);
         }
+        
+        AccountName.setText("");
+        Email.setText("");
+        Password.setText("");
+        Note.setText("");
 
     }//GEN-LAST:event_SaveButtonActionPerformed
 
@@ -804,7 +753,7 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_LogoutMenuActionPerformed
 
     private void DeletePasswordMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeletePasswordMenuActionPerformed
-        MainPanel.setSelectedComponent(DeletePasswordPanel);
+       
     }//GEN-LAST:event_DeletePasswordMenuActionPerformed
 
     private void LoginMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginMenu2ActionPerformed
@@ -900,6 +849,12 @@ public class MainGUI extends javax.swing.JFrame {
             CalculateSecurityPassword(OutputPassword, SecurityPassword);
         }
     }//GEN-LAST:event_GeneratePasswordUpdate
+
+    private void EntrySearch(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_EntrySearch
+        String accountSearch = AccountSearch.getText().trim();
+        List<Entry> filteredEntries = GetEntryListFromJSON(accountSearch, null);
+        displayEntries(filteredEntries);
+    }//GEN-LAST:event_EntrySearch
     public void WritePasswordToJSON(String accountName, String email, String password, String note) {
         String filePath = username + ".json";
 
@@ -941,12 +896,34 @@ public class MainGUI extends javax.swing.JFrame {
     }
 
     private void displayEntries(List<Entry> entries) {
-        PasswordTableModel passwordTableModel = new PasswordTableModel(entries);
+        Entry.PasswordTableModel passwordTableModel = new Entry.PasswordTableModel(entries);
         PasswordTable.setModel(passwordTableModel);
+
+        TableActionEvent event = new TableActionEvent() {
+            @Override
+            public void onEdit(int row) {
+                System.out.println("Edit row : " + row);
+            }
+
+            @Override
+            public void onDelete(int row) {
+                if (PasswordTable.isEditing()) {
+                    PasswordTable.getCellEditor().stopCellEditing();
+                }
+                DefaultTableModel model = (DefaultTableModel) PasswordTable.getModel();
+                model.removeRow(row);
+            }
+
+            @Override
+            public void onView(int row) {
+                System.out.println("View row : " + row);
+            }
+        };
+        PasswordTable.getColumnModel().getColumn(4).setCellRenderer(new Entry.TableActionCellRender());
+        PasswordTable.getColumnModel().getColumn(4).setCellEditor(new TableActionCellEditor(event));
     }
 
-
-    private List<Entry> GetEntryListFromJSON(String passwordSearch, String passwordToDelete) {
+    private List<Entry> GetEntryListFromJSON(String accountSearch, String entryToDelete) {
         String filePath = username + ".json";
         StringBuilder jsonData = new StringBuilder();
 
@@ -968,10 +945,8 @@ public class MainGUI extends javax.swing.JFrame {
 
                 Entry entry = new Entry(accountName, password, email, note);
 
-                // Aggiungi l'entry alla lista se la password non corrisponde a quella da eliminare
-                if (!(passwordToDelete != null && !passwordToDelete.isEmpty() && password.equals(passwordToDelete))) {
-                    // Verifica la password di ricerca solo se è fornita e non è vuota
-                    if (passwordSearch == null || passwordSearch.isEmpty() || password.toLowerCase().contains(passwordSearch.toLowerCase())) {
+                if (!(entryToDelete != null && !entryToDelete.isEmpty() && accountName.equals(entryToDelete))) {
+                    if (accountSearch == null || accountSearch.isEmpty() || accountName.toLowerCase().contains(accountSearch.toLowerCase())) {
                         entries.add(entry);
                     }
                 }
@@ -1103,11 +1078,10 @@ public class MainGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField AccountName;
+    private javax.swing.JTextField AccountSearch;
     private javax.swing.JButton CancelButton;
     private javax.swing.JMenu CreditsMenu;
-    private javax.swing.JButton DeletePasswordButton;
     private javax.swing.JMenuItem DeletePasswordMenu;
-    private javax.swing.JPanel DeletePasswordPanel;
     private javax.swing.JTextField Email;
     private javax.swing.JMenu EntryListMenu;
     private javax.swing.JMenuItem EntryListMenu2;
@@ -1130,11 +1104,9 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTextField Password;
     private javax.swing.JMenuItem PasswordGeneratorMenu;
     private javax.swing.JPanel PasswordGeneratorPanel;
-    private javax.swing.JTextField PasswordSearch;
     private javax.swing.JButton PasswordSearchButton;
     private javax.swing.JSpinner PasswordSize;
     private javax.swing.JTable PasswordTable;
-    private javax.swing.JTextField PasswordToDelete;
     private javax.swing.JMenuItem RegisterMenu;
     private javax.swing.JButton SaveButton;
     private javax.swing.JToggleButton SaveButton2;
@@ -1145,7 +1117,6 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JCheckBox Symbol;
     private javax.swing.JCheckBox Uppercase;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1153,7 +1124,6 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
