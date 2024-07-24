@@ -7,10 +7,7 @@ package com.mycompany.passwordmanager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- *
- * @author Lorenzo
- */
+
 public class PanelAction extends javax.swing.JPanel {
 
     /**
@@ -19,6 +16,7 @@ public class PanelAction extends javax.swing.JPanel {
     public PanelAction() {
         initComponents();
     }
+
     public void initEvent(TableActionEvent event, int row) {
         EditButton.addActionListener(new ActionListener() {
             @Override
@@ -26,13 +24,13 @@ public class PanelAction extends javax.swing.JPanel {
                 event.onEdit(row);
             }
         });
-        DelateButton.addActionListener(new ActionListener() {
+        DeleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 event.onDelete(row);
             }
         });
-        SeeButton.addActionListener(new ActionListener() {
+        ViewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 event.onView(row);
@@ -49,8 +47,8 @@ public class PanelAction extends javax.swing.JPanel {
     private void initComponents() {
 
         EditButton = new javax.swing.JButton();
-        DelateButton = new javax.swing.JButton();
-        SeeButton = new javax.swing.JButton();
+        DeleteButton = new javax.swing.JButton();
+        ViewButton = new javax.swing.JButton();
 
         EditButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/pencil.png"))); // NOI18N
         EditButton.addActionListener(new java.awt.event.ActionListener() {
@@ -59,17 +57,17 @@ public class PanelAction extends javax.swing.JPanel {
             }
         });
 
-        DelateButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
-        DelateButton.addActionListener(new java.awt.event.ActionListener() {
+        DeleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
+        DeleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DelateButtonActionPerformed(evt);
+                DeleteButtonActionPerformed(evt);
             }
         });
 
-        SeeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/view.png"))); // NOI18N
-        SeeButton.addActionListener(new java.awt.event.ActionListener() {
+        ViewButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/view.png"))); // NOI18N
+        ViewButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SeeButtonActionPerformed(evt);
+                ViewButtonActionPerformed(evt);
             }
         });
 
@@ -81,9 +79,9 @@ public class PanelAction extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(EditButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(DelateButton)
+                .addComponent(DeleteButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(SeeButton)
+                .addComponent(ViewButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -92,8 +90,8 @@ public class PanelAction extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(EditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DelateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SeeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ViewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -102,18 +100,18 @@ public class PanelAction extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_EditButtonActionPerformed
 
-    private void DelateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DelateButtonActionPerformed
+    private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_DelateButtonActionPerformed
+    }//GEN-LAST:event_DeleteButtonActionPerformed
 
-    private void SeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeeButtonActionPerformed
+    private void ViewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewButtonActionPerformed
         
-    }//GEN-LAST:event_SeeButtonActionPerformed
+    }//GEN-LAST:event_ViewButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton DelateButton;
+    private javax.swing.JButton DeleteButton;
     private javax.swing.JButton EditButton;
-    private javax.swing.JButton SeeButton;
+    private javax.swing.JButton ViewButton;
     // End of variables declaration//GEN-END:variables
 }

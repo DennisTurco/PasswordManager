@@ -20,9 +20,9 @@
               <EmptySpace max="32767" attributes="0"/>
               <Component id="EditButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="DelateButton" min="-2" max="-2" attributes="0"/>
+              <Component id="DeleteButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="SeeButton" min="-2" max="-2" attributes="0"/>
+              <Component id="ViewButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -33,8 +33,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="EditButton" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
-                  <Component id="DelateButton" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
-                  <Component id="SeeButton" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
+                  <Component id="DeleteButton" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
+                  <Component id="ViewButton" alignment="3" min="-2" pref="27" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -52,24 +52,24 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="EditButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="DelateButton">
+    <Component class="javax.swing.JButton" name="DeleteButton">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/images/delete.png"/>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DelateButtonActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DeleteButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="SeeButton">
+    <Component class="javax.swing.JButton" name="ViewButton">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/images/view.png"/>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SeeButtonActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ViewButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

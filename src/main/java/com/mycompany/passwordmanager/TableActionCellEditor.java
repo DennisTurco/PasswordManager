@@ -10,11 +10,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
-/**
- *
- * @author RAVEN
- */
-public class TableActionCellEditor extends DefaultCellEditor {
+class TableActionCellEditor extends DefaultCellEditor {
 
     private TableActionEvent event;
 

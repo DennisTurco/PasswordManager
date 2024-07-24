@@ -6,7 +6,6 @@ package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;

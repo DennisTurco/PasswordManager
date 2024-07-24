@@ -6,7 +6,6 @@ package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Image;
 import java.io.BufferedReader;
@@ -22,23 +21,18 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Box;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 
 public class MainGUI extends javax.swing.JFrame {
     private String username;
-    private javax.swing.JLabel PasswordStrengthLabel;
     
 
     public MainGUI(String username) {
@@ -59,7 +53,6 @@ public class MainGUI extends javax.swing.JFrame {
         SaveButton2.setEnabled(logged);
         EntryListMenu.setEnabled(logged);
         NewEntryMenu.setEnabled(logged);
-        DeletePasswordMenu.setEnabled(logged);
         RegisterMenu.setEnabled(!logged);
         LogoutMenu2.setEnabled(logged);
         MainPanel.setEnabledAt(1, logged);
@@ -68,9 +61,8 @@ public class MainGUI extends javax.swing.JFrame {
         if (logged) {
             List<Entry> entries = GetEntryListFromJSON(null, null);
 
-           displayEntries(entries);
+            displayEntries(entries);
 
-           
             // Sostituisce la parola login con il nome dell'account loggato
             LoginMenu.setText(username);
         }
@@ -137,7 +129,6 @@ public class MainGUI extends javax.swing.JFrame {
         PasswordGeneratorMenu = new javax.swing.JMenuItem();
         NewEntryMenu = new javax.swing.JMenuItem();
         EntryListMenu2 = new javax.swing.JMenuItem();
-        DeletePasswordMenu = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         LoginMenu2 = new javax.swing.JMenuItem();
         LogoutMenu2 = new javax.swing.JMenuItem();
@@ -217,42 +208,40 @@ public class MainGUI extends javax.swing.JFrame {
         PasswordGeneratorPanel.setLayout(PasswordGeneratorPanelLayout);
         PasswordGeneratorPanelLayout.setHorizontalGroup(
             PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(337, 337, 337))
             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
-                        .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(OutputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, PasswordGeneratorPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
                                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(Symbol, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(LowercaseLetters, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addGap(340, 340, 340)))
-                        .addGap(18, 18, 18)
-                        .addComponent(SaveButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(205, 205, 205))
-                    .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
-                        .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(Numbers, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(Uppercase, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
-                                .addGap(261, 261, 261)
-                                .addComponent(SecurityPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8))
-                        .addGap(274, 274, 274))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(GeneratePasswordButton)
-                .addGap(280, 280, 280))
+                                .addGap(587, 587, 587))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
+                                .addComponent(OutputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(SaveButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(252, 252, 252))))
+                    .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(Numbers, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Uppercase, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
+                .addGap(240, 240, 240)
+                .addComponent(jLabel8)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
+                .addGap(258, 258, 258)
+                .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(SecurityPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(GeneratePasswordButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         PasswordGeneratorPanelLayout.setVerticalGroup(
             PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -277,9 +266,9 @@ public class MainGUI extends javax.swing.JFrame {
                     .addComponent(SaveButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(GeneratePasswordButton)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(SecurityPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(112, 112, 112))
+                .addGap(118, 118, 118))
         );
 
         MainPanel.addTab("Password generator", PasswordGeneratorPanel);
@@ -343,36 +332,36 @@ public class MainGUI extends javax.swing.JFrame {
         NewEntryPanelLayout.setHorizontalGroup(
             NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NewEntryPanelLayout.createSequentialGroup()
+                .addContainerGap(52, Short.MAX_VALUE)
+                .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(NewEntryPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)))
                 .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(NewEntryPanelLayout.createSequentialGroup()
-                        .addGap(145, 145, 145)
-                        .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(NewEntryPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(8, 8, 8)))
                         .addGap(63, 63, 63)
-                        .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(AccountName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(SecurityPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(NewEntryPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(CancelButton)
-                            .addGap(18, 18, 18)
-                            .addComponent(SaveButton)
-                            .addGap(30, 30, 30))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, NewEntryPanelLayout.createSequentialGroup()
-                            .addGap(269, 269, 269)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(39, 39, 39))
+                        .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(NewEntryPanelLayout.createSequentialGroup()
+                                .addComponent(CancelButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(SaveButton))
+                            .addGroup(NewEntryPanelLayout.createSequentialGroup()
+                                .addGroup(NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(AccountName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                                .addComponent(SecurityPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(97, Short.MAX_VALUE))
+                    .addGroup(NewEntryPanelLayout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         NewEntryPanelLayout.setVerticalGroup(
             NewEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -515,16 +504,6 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
         EntryListMenu.add(EntryListMenu2);
-
-        DeletePasswordMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        DeletePasswordMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
-        DeletePasswordMenu.setText("Delete password");
-        DeletePasswordMenu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DeletePasswordMenuActionPerformed(evt);
-            }
-        });
-        EntryListMenu.add(DeletePasswordMenu);
 
         jMenuBar1.add(EntryListMenu);
 
@@ -752,10 +731,6 @@ public class MainGUI extends javax.swing.JFrame {
         loginGUI();
     }//GEN-LAST:event_LogoutMenuActionPerformed
 
-    private void DeletePasswordMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeletePasswordMenuActionPerformed
-       
-    }//GEN-LAST:event_DeletePasswordMenuActionPerformed
-
     private void LoginMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginMenu2ActionPerformed
         loginGUI();
     }//GEN-LAST:event_LoginMenu2ActionPerformed
@@ -801,7 +776,7 @@ public class MainGUI extends javax.swing.JFrame {
                         ex.printStackTrace();
                     }
                 } else {
-                    System.err.println("Desktop non supportato. Impossibile aprire il sito web.");
+                    System.err.println("Desktop not supported. Unable to open website.");
                 }
     }//GEN-LAST:event_MyFacebookActionPerformed
 
@@ -886,7 +861,7 @@ public class MainGUI extends javax.swing.JFrame {
             }
 
             if (accountName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Inserire il testo nei campi obbligatori", "Failure", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Enter the text in the required fields", "Failure", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -1010,25 +985,38 @@ public class MainGUI extends javax.swing.JFrame {
     }
     
     private void CalculateSecurityPassword(JTextField passwordInput, JLabel securityOutput) {
-        Integer passwordSize = (Integer) PasswordSize.getValue();
+    Integer passwordSize = (Integer) PasswordSize.getValue();
 
-        // Calcolare la forza della password generata
-        int strength = calculatePasswordStrength(passwordInput.getText());
-        String strengthText = getStrengthText(strength); // Funzione per ottenere il testo descrittivo della forza
-        
-        
-        // Aggiornare la JLabel con la forza calcolata
-        securityOutput.setText("Password Strength: " + strengthText);
-        
+    // Calcolare la forza della password generata
+    int strength = calculatePasswordStrength(passwordInput.getText());
+    String strengthText = getStrengthText(strength); // Funzione per ottenere il testo descrittivo della forza
+    
+    // Aggiornare la JLabel con la forza calcolata
+    securityOutput.setText("Password Strength: " + strengthText);
 
-        // Aggiorna l'interfaccia utente
-        validate();
-        repaint();
+    // Cambiare il colore della JLabel in base alla forza della password
+    switch (strengthText) {
+        case "Very Weak":
+        case "Weak":
+            securityOutput.setForeground(Color.RED);
+            break;
+        case "Medium":
+            securityOutput.setForeground(Color.ORANGE);
+            break;
+        case "Strong":
+            securityOutput.setForeground(Color.YELLOW);
+            break;
+        default: // "Unknown"
+            securityOutput.setForeground(Color.GREEN);
+            break;
     }
 
+    // Aggiorna l'interfaccia utente
+    validate();
+    repaint();
+}
 
     private int calculatePasswordStrength(String password) {
-        
         int length = password.length();
         if (length < 4) {
             return 0; // Password molto debole
@@ -1037,9 +1025,9 @@ public class MainGUI extends javax.swing.JFrame {
         } else if (length < 12) {
             return 2; // Password media
         }  else if (length < 16) {
-            return 3; // Password mediaelse 
+            return 3; // Password forte
         } else {
-            return 4; // Password forte
+            return 4; // Password molto forte
         }
     }
 
@@ -1057,12 +1045,11 @@ public class MainGUI extends javax.swing.JFrame {
                 return "Unknown";
         }
     }
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
         } catch (Exception ex) {
@@ -1081,7 +1068,6 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTextField AccountSearch;
     private javax.swing.JButton CancelButton;
     private javax.swing.JMenu CreditsMenu;
-    private javax.swing.JMenuItem DeletePasswordMenu;
     private javax.swing.JTextField Email;
     private javax.swing.JMenu EntryListMenu;
     private javax.swing.JMenuItem EntryListMenu2;
