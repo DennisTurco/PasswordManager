@@ -7,11 +7,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.AbstractTableModel;
 
-/**
- * Entry class with embedded TableActionCellRender class
- * 
- * @author RAVEN
- */
+
 public class Entry {
     private String accountName;
     private String password;
