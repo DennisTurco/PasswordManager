@@ -747,54 +747,57 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_RegisterMenuActionPerformed
 
     private void MyGitHubActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyGitHubActionPerformed
-         // URL del sito web da aprire
-                String url = "https://github.com/LorenzoBertinelli";
+        // URL del sito web da aprire
+        String url = "https://github.com/LorenzoBertinelli";
                 
-                // Tentativo di aprire il sito web nel browser predefinito
-                if (Desktop.isDesktopSupported()) {
-                    Desktop desktop = Desktop.getDesktop();
-                    try {
-                        desktop.browse(new URI(url));
-                    } catch (IOException | URISyntaxException ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    System.err.println("Desktop non supportato. Impossibile aprire il sito web.");
-                }
+        // Tentativo di aprire il sito web nel browser predefinito
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI(url));
+            } catch (IOException | URISyntaxException ex) {
+                    ex.printStackTrace();
+            }
+        } 
+        else {
+            System.err.println("Desktop not supported. Unable to open website.");
+        }
     }//GEN-LAST:event_MyGitHubActionPerformed
 
     private void MyFacebookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyFacebookActionPerformed
-         // URL del sito web da aprire
-                String url = "https://www.facebook.com/profile.php?id=100073820334511&locale=it_IT";
+        // URL del sito web da aprire
+        String url = "https://www.facebook.com/profile.php?id=100073820334511&locale=it_IT";
                 
-                // Tentativo di aprire il sito web nel browser predefinito
-                if (Desktop.isDesktopSupported()) {
-                    Desktop desktop = Desktop.getDesktop();
-                    try {
-                        desktop.browse(new URI(url));
-                    } catch (IOException | URISyntaxException ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    System.err.println("Desktop not supported. Unable to open website.");
-                }
+        // Tentativo di aprire il sito web nel browser predefinito
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI(url));
+            } catch (IOException | URISyntaxException ex) {
+                    ex.printStackTrace();
+            }
+        }
+        else {
+            System.err.println("Desktop not supported. Unable to open website.");
+        }
     }//GEN-LAST:event_MyFacebookActionPerformed
 
     private void MyLinkedinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyLinkedinActionPerformed
         // URL del sito web da aprire
-                String url = "https://www.linkedin.com/in/lorenzo-bertinelli-822718310/";
+        String url = "https://www.linkedin.com/in/lorenzo-bertinelli-822718310/";
                 
-                // Tentativo di aprire il sito web nel browser predefinito
-                if (Desktop.isDesktopSupported()) {
-                    Desktop desktop = Desktop.getDesktop();
-                    try {
-                        desktop.browse(new URI(url));
-                    } catch (IOException | URISyntaxException ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    System.err.println("Desktop non supportato. Impossibile aprire il sito web.");
-                }
+        // Tentativo di aprire il sito web nel browser predefinito
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI(url));
+            } catch (IOException | URISyntaxException ex) {
+                    ex.printStackTrace();
+            }
+        }
+        else {
+            System.err.println("Desktop not supported. Unable to open website.");
+        }
     }//GEN-LAST:event_MyLinkedinActionPerformed
 
     private void LoginClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginClick
