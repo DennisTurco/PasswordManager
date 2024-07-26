@@ -176,49 +176,58 @@ public class RegisterGUI extends javax.swing.JFrame {
         newEntry.put("AccountName", username);
         newEntry.put("Password", password);
 
+        // Crea un array JSON e aggiungi l'oggetto utente
+        JSONArray userArray = new JSONArray();
+        userArray.put(newEntry);
+
         // Determina il percorso del file usando il nome dell'account
         String filePath = username + ".json";
-        
+
         try (FileWriter fileWriter = new FileWriter(filePath)) {
-            // Scrivi il JSONObject nel file
-            fileWriter.write(newEntry.toString(4)); // Il parametro 4 è per l'indentazione del JSON
+            // Scrivi il JSONArray nel file
+            fileWriter.write(userArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
             System.out.println("Informazioni aggiunte con successo.");
         } catch (IOException e) {
             e.printStackTrace();
-        }
     }
+}
+
     
     /**
      * Aggiunge l'utente al file JSON centrale
      */
+    /**
+ * Aggiunge l'utente al file JSON centrale
+ */
     public void addUserToCentralFile(String username, String password) {
-        String centralFilePath = "accounts.json";
-        JSONArray accountsArray;
+    String centralFilePath = "accounts.json";
+    JSONArray accountsArray;
 
-        // Leggi il file JSON centrale, se esiste
-        try {
-            String content = new String(Files.readAllBytes(Paths.get(centralFilePath)));
-            accountsArray = new JSONArray(content);
-        } catch (IOException e) {
-            accountsArray = new JSONArray(); // Crea un nuovo array se il file non esiste
-        }
-
-        // Crea un nuovo oggetto JSON per l'utente
-        JSONObject newUser = new JSONObject();
-        newUser.put("username", username);
-        newUser.put("Password", password);
-
-        // Aggiungi l'utente all'array
-        accountsArray.put(newUser);
-
-        // Scrivi l'array aggiornato nel file
-        try (FileWriter fileWriter = new FileWriter(centralFilePath)) {
-            fileWriter.write(accountsArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
-            System.out.println("Utente aggiunto al file centrale con successo.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    // Leggi il file JSON centrale, se esiste
+    try {
+        String content = new String(Files.readAllBytes(Paths.get(centralFilePath)));
+        accountsArray = new JSONArray(content);
+    } catch (IOException e) {
+        accountsArray = new JSONArray(); // Crea un nuovo array se il file non esiste
     }
+
+    // Crea un nuovo oggetto JSON per l'utente
+    JSONObject newUser = new JSONObject();
+    newUser.put("username", username);
+    newUser.put("Password", password);
+
+    // Aggiungi l'utente all'array
+    accountsArray.put(newUser);
+
+    // Scrivi l'array aggiornato nel file
+    try (FileWriter fileWriter = new FileWriter(centralFilePath)) {
+        fileWriter.write(accountsArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
+        System.out.println("Utente aggiunto al file centrale con successo.");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
     /**
      * @param args the command line arguments
      */
