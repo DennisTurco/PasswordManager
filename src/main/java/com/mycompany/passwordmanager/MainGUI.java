@@ -29,6 +29,13 @@ import org.json.JSONObject;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import com.mycompany.passwordmanager.TableActionCellEditor;
+import com.mycompany.passwordmanager.TableActionCellRender;
+import com.mycompany.passwordmanager.TableActionEvent;
+import java.awt.Component;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 
 
 public class MainGUI extends javax.swing.JFrame {
@@ -876,15 +883,17 @@ public class MainGUI extends javax.swing.JFrame {
     private void displayEntries(List<Entry> entries) {
         Entry.PasswordTableModel passwordTableModel = new Entry.PasswordTableModel(entries);
         PasswordTable.setModel(passwordTableModel);
-
+        System.out.println("enter1");
         TableActionEvent event = new TableActionEvent() {
             @Override
             public void onEdit(int row) {
                 System.out.println("Edit row : " + row);
+                System.out.println("enter2");
             }
 
             @Override
             public void onDelete(int row) {
+                System.out.println("enter3");
                 if (PasswordTable.isEditing()) {
                     PasswordTable.getCellEditor().stopCellEditing();
                 }
@@ -895,10 +904,18 @@ public class MainGUI extends javax.swing.JFrame {
             @Override
             public void onView(int row) {
                 System.out.println("View row : " + row);
+                System.out.println("enter4");
             }
         };
         PasswordTable.getColumnModel().getColumn(4).setCellRenderer(new Entry.TableActionCellRender());
         PasswordTable.getColumnModel().getColumn(4).setCellEditor(new TableActionCellEditor(event));
+        PasswordTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int i, int i1) {
+                setHorizontalAlignment(SwingConstants.RIGHT);
+                return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1);
+            }
+        });
     }
 
     private List<Entry> GetEntryListFromJSON(String accountSearch, String entryToDelete) {

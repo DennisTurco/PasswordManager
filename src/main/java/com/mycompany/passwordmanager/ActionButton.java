@@ -1,3 +1,4 @@
+package com.mycompany.passwordmanager;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -24,6 +25,7 @@ public class ActionButton extends JButton {
             @Override
             public void mousePressed(MouseEvent me) {
                 mousePress = true;
+                System.out.println("eo");
             }
 
             @Override

@@ -1,13 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package com.mycompany.passwordmanager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
 
+/**
+ *
+ * @author Lorenzo
+ */
 public class PanelAction extends javax.swing.JPanel {
 
     /**
@@ -15,8 +19,9 @@ public class PanelAction extends javax.swing.JPanel {
      */
     public PanelAction() {
         initComponents();
+        
     }
-
+    
     public void initEvent(TableActionEvent event, int row) {
         EditButton.addActionListener(new ActionListener() {
             @Override
@@ -37,6 +42,7 @@ public class PanelAction extends javax.swing.JPanel {
             }
         });
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -46,30 +52,15 @@ public class PanelAction extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        EditButton = new javax.swing.JButton();
-        DeleteButton = new javax.swing.JButton();
-        ViewButton = new javax.swing.JButton();
+        EditButton = new com.mycompany.passwordmanager.ActionButton();
+        ViewButton = new com.mycompany.passwordmanager.ActionButton();
+        DeleteButton = new com.mycompany.passwordmanager.ActionButton();
 
         EditButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/pencil.png"))); // NOI18N
-        EditButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EditButtonActionPerformed(evt);
-            }
-        });
-
-        DeleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
-        DeleteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DeleteButtonActionPerformed(evt);
-            }
-        });
 
         ViewButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/view.png"))); // NOI18N
-        ViewButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ViewButtonActionPerformed(evt);
-            }
-        });
+
+        DeleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -77,41 +68,29 @@ public class PanelAction extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(EditButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(DeleteButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ViewButton)
+                .addComponent(EditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ViewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(EditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ViewButton, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(ViewButton, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+                    .addComponent(EditButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(DeleteButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void EditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_EditButtonActionPerformed
-
-    private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_DeleteButtonActionPerformed
-
-    private void ViewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewButtonActionPerformed
-        
-    }//GEN-LAST:event_ViewButtonActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton DeleteButton;
-    private javax.swing.JButton EditButton;
-    private javax.swing.JButton ViewButton;
+    private com.mycompany.passwordmanager.ActionButton DeleteButton;
+    private com.mycompany.passwordmanager.ActionButton EditButton;
+    private com.mycompany.passwordmanager.ActionButton ViewButton;
     // End of variables declaration//GEN-END:variables
 }
