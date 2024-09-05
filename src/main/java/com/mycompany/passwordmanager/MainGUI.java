@@ -28,20 +28,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import com.mycompany.passwordmanager.TableActionCellEditor;
-import com.mycompany.passwordmanager.TableActionCellRender;
-import com.mycompany.passwordmanager.TableActionEvent;
-import java.awt.Component;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 
 
 public class MainGUI extends javax.swing.JFrame {
     private String username;
+    private JsonManager jsonManager = new JsonManager();
     
-
+    
     public MainGUI(String username) {
         this.username = username;
         initComponents();
@@ -66,7 +59,7 @@ public class MainGUI extends javax.swing.JFrame {
         MainPanel.setEnabledAt(2, logged);
         
         if (logged) {
-            List<Entry> entries = GetEntryListFromJSON(null, null);
+            List<Entry> entries = jsonManager.GetEntryListFromJSON(null, null, username);
 
             displayEntries(entries);
 
@@ -630,7 +623,7 @@ public class MainGUI extends javax.swing.JFrame {
         dispose();
     }
     private void SavePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SavePasswordButtonActionPerformed
-        WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText());
+        jsonManager.WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText(), username, this);
         
         JOptionPane.showMessageDialog(this, "Password saved successfully!", "Password saved", JOptionPane.OK_OPTION);
         
@@ -649,7 +642,7 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void PasswordSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordSearchButtonActionPerformed
        String accountSearch = AccountSearch.getText().trim();
-        List<Entry> filteredEntries = GetEntryListFromJSON(accountSearch, null);
+        List<Entry> filteredEntries = jsonManager.GetEntryListFromJSON(accountSearch, null, username);
         displayEntries(filteredEntries);
     }//GEN-LAST:event_PasswordSearchButtonActionPerformed
 
@@ -658,10 +651,9 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_EmailActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
-        WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText());
-        JOptionPane.showMessageDialog(this, "Password saved successfully!", "Password saved", JOptionPane.OK_OPTION);
+        jsonManager.WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText(), username, this);        JOptionPane.showMessageDialog(this, "Password saved successfully!", "Password saved", JOptionPane.OK_OPTION);
         if (isUserLoggedIn()) {
-            List<Entry> updatedEntries = GetEntryListFromJSON(null, null);
+            List<Entry> updatedEntries = jsonManager.GetEntryListFromJSON(null, null, username);
             displayEntries(updatedEntries);
         }
         
@@ -837,150 +829,22 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void EntrySearch(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_EntrySearch
         String accountSearch = AccountSearch.getText().trim();
-        List<Entry> filteredEntries = GetEntryListFromJSON(accountSearch, null);
+        List<Entry> filteredEntries = jsonManager.GetEntryListFromJSON(accountSearch, null, username);
         displayEntries(filteredEntries);
     }//GEN-LAST:event_EntrySearch
-    public void WritePasswordToJSON(String accountName, String email, String password, String note) {
-        String filePath = username + ".json";
 
-        JSONObject newEntry = new JSONObject();
-        newEntry.put("AccountName", accountName);
-        newEntry.put("Email", email);
-        newEntry.put("Password", password);
-        newEntry.put("Note", note);
-
-        try {
-            File file = new File(filePath);
-            JSONArray jsonArray;
-
-            if (file.exists()) {
-                String content = new String(Files.readAllBytes(Paths.get(filePath)));
-                if (content.isEmpty()) {
-                    jsonArray = new JSONArray();
-                } else {
-                    jsonArray = new JSONArray(content);
-                }
-            } else {
-                jsonArray = new JSONArray();
-            }
-
-            jsonArray.put(newEntry);
-
-            try (FileWriter fileWriter = new FileWriter(filePath)) {
-                fileWriter.write(jsonArray.toString(4));
-            }
-
-            if (accountName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Enter the text in the required fields", "Failure", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void displayEntries(List<Entry> entries) {
         Entry.PasswordTableModel passwordTableModel = new Entry.PasswordTableModel(entries);
         PasswordTable.setModel(passwordTableModel);
         System.out.println("enter1");
-        TableActionEvent event = new TableActionEvent() {
-            @Override
-            public void onEdit(int row) {
-                System.out.println("Edit row : " + row);
-                System.out.println("enter2");
-            }
-
-            @Override
-            public void onDelete(int row) {
-                System.out.println("enter3");
-                if (PasswordTable.isEditing()) {
-                    PasswordTable.getCellEditor().stopCellEditing();
-                }
-                DefaultTableModel model = (DefaultTableModel) PasswordTable.getModel();
-                model.removeRow(row);
-            }
-
-            @Override
-            public void onView(int row) {
-                System.out.println("View row : " + row);
-                System.out.println("enter4");
-            }
-        };
-        PasswordTable.getColumnModel().getColumn(4).setCellRenderer(new Entry.TableActionCellRender());
-        PasswordTable.getColumnModel().getColumn(4).setCellEditor(new TableActionCellEditor(event));
-        PasswordTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int i, int i1) {
-                setHorizontalAlignment(SwingConstants.RIGHT);
-                return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1);
-            }
-        });
-    }
-
-    private List<Entry> GetEntryListFromJSON(String accountSearch, String entryToDelete) {
-        String filePath = username + ".json";
-        StringBuilder jsonData = new StringBuilder();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                jsonData.append(line);
-            }
-
-            JSONArray jsonArray = new JSONArray(jsonData.toString());
-            List<Entry> entries = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String accountName = jsonObject.optString("AccountName");
-                String password = jsonObject.optString("Password");
-                String email = jsonObject.optString("Email");
-                String note = jsonObject.optString("Note");
-
-                Entry entry = new Entry(accountName, password, email, note);
-
-                if (!(entryToDelete != null && !entryToDelete.isEmpty() && accountName.equals(entryToDelete))) {
-                    if (accountSearch == null || accountSearch.isEmpty() || accountName.toLowerCase().contains(accountSearch.toLowerCase())) {
-                        entries.add(entry);
-                    }
-                }
-            }
-
-            return entries;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        
     }
 
     private boolean isUserLoggedIn() {
         return username != null && !username.isEmpty();
     }
 
-    
-    // Metodo per salvare le voci aggiornate nel file JSON (opzionale, se necessario)
-    private void saveEntriesToJson(List<Entry> entries) {
-        String filePath = username + ".json";
-        JSONArray jsonArray = new JSONArray();
-
-        for (Entry entry : entries) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("AccountName", entry.getAccountName());
-            jsonObject.put("Password", entry.getPassword());
-            jsonObject.put("Email", entry.getEmail());
-            jsonObject.put("Note", entry.getNote());
-            jsonArray.put(jsonObject);
-        }
-
-        try (FileWriter fileWriter = new FileWriter(filePath)) {
-            fileWriter.write(jsonArray.toString(4)); // Indentazione di 4 spazi per formattare il JSON
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
     private String generatePassword(int length, boolean useLower, boolean useUpper, boolean useNumbers, boolean useSymbols) {
         StringBuilder password = new StringBuilder(length);
         SecureRandom random = new SecureRandom();

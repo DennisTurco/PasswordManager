@@ -6,13 +6,8 @@ package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import javax.swing.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 /**
  *
  * @author Lorenzo
@@ -21,6 +16,10 @@ public class LoginGUI extends javax.swing.JFrame {
     /**
      * Creates new form LoginGUI
      */
+    
+    //serve per richiamare i metodi della classe, inquesto caso, JsonManager
+    private JsonManager jsonManager = new JsonManager();
+    
     public LoginGUI() {
         initComponents();
         //logo application
@@ -161,7 +160,7 @@ public class LoginGUI extends javax.swing.JFrame {
             return;
         }
 
-        if(!ReadAccoutToJSON(accountName, password)){
+        if(!jsonManager.ReadAccoutToJSON(accountName, password)){
             JOptionPane.showMessageDialog(this, "Incorrect username or password", "Failure", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -196,35 +195,7 @@ public class LoginGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_PasswordActionPerformed
     
-    private boolean ReadAccoutToJSON(String username, String password){
-        String filePath = "accounts.json";
-        StringBuilder jsonData = new StringBuilder();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                jsonData.append(line);
-            }
-
-            // Parsing the JSON array
-            JSONArray jsonArray = new JSONArray(jsonData.toString());
-
-            // Iterate through the array and get the values
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String accountName = jsonObject.getString("username");
-                String accountPassword = jsonObject.getString("Password");
-                
-                if(username.equals(accountName) && password.equals(accountPassword)){
-                    return true;
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+   
     /**
      * @param args the command line arguments
      */
@@ -236,16 +207,7 @@ public class LoginGUI extends javax.swing.JFrame {
         return checkCredentials(username, password);
     }
 
-    private void saveLoginState(String username) {
-        JSONObject loginState = new JSONObject();
-        loginState.put("username", username);
 
-        try (FileWriter fileWriter = new FileWriter("loginState.json")) {
-            fileWriter.write(loginState.toString(4));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

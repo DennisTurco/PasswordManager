@@ -22,6 +22,9 @@ public class RegisterGUI extends javax.swing.JFrame {
     /**
      * Creates new form RegisterGUI
      */
+    
+    private JsonManager jsonManager = new JsonManager();
+    
     public RegisterGUI() {
         initComponents();
         //logo application
@@ -141,7 +144,7 @@ public class RegisterGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void RegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterButtonActionPerformed
-         String username = Username.getText();
+        String username = Username.getText();
         String password = Password.getText(); 
         String confirmPassword = ConfirmPassword.getText();
         
@@ -150,10 +153,10 @@ public class RegisterGUI extends javax.swing.JFrame {
         }
         else{
             // Creare un file JSON separato per ciascun utente
-            createUserFile(username, password);
+            jsonManager.createUserFile(username, password);
             
             // Aggiungere l'account al file JSON centrale
-            addUserToCentralFile(username, password);
+            jsonManager.addUserToCentralFile(username, password);
             
             JOptionPane.showMessageDialog(this, "User " + username + " created successfully!", "User created", JOptionPane.OK_OPTION);
             
@@ -167,89 +170,7 @@ public class RegisterGUI extends javax.swing.JFrame {
     private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
         dispose(); 
     }//GEN-LAST:event_CloseButtonActionPerformed
-    /**
-     * Crea un file JSON per l'utente
-     */
-    public void createUserFile(String username, String password) {
-        // Crea un nuovo oggetto JSON con le informazioni da aggiungere
-        JSONObject newEntry = new JSONObject();
-        newEntry.put("AccountName", username);
-        newEntry.put("Password", password);
 
-        // Crea un array JSON e aggiungi l'oggetto utente
-        JSONArray userArray = new JSONArray();
-        userArray.put(newEntry);
-
-        // Determina il percorso del file usando il nome dell'account
-        String filePath = username + ".json";
-
-        try (FileWriter fileWriter = new FileWriter(filePath)) {
-            // Scrivi il JSONArray nel file
-            fileWriter.write(userArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
-            System.out.println("Informazioni aggiunte con successo.");
-        } catch (IOException e) {
-            e.printStackTrace();
-    }
-}
-
-    
-    /**
-     * Aggiunge l'utente al file JSON centrale
-     */
-    /**
- * Aggiunge l'utente al file JSON centrale
- */
-    public void addUserToCentralFile(String username, String password) {
-    String centralFilePath = "accounts.json";
-    JSONArray accountsArray;
-
-    // Leggi il file JSON centrale, se esiste
-    try {
-        String content = new String(Files.readAllBytes(Paths.get(centralFilePath)));
-        accountsArray = new JSONArray(content);
-    } catch (IOException e) {
-        accountsArray = new JSONArray(); // Crea un nuovo array se il file non esiste
-    }
-
-    // Crea un nuovo oggetto JSON per l'utente
-    JSONObject newUser = new JSONObject();
-    newUser.put("username", username);
-    newUser.put("Password", password);
-
-    // Aggiungi l'utente all'array
-    accountsArray.put(newUser);
-
-    // Scrivi l'array aggiornato nel file
-    try (FileWriter fileWriter = new FileWriter(centralFilePath)) {
-        fileWriter.write(accountsArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
-        System.out.println("Utente aggiunto al file centrale con successo.");
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
-
-    /**
-     * @param args the command line arguments
-     */
-    public void WriteAccountToJSON(String username, String password) {
-        // Crea un nuovo oggetto JSON con le informazioni da aggiungere
-        JSONObject newEntry = new JSONObject();
-        newEntry.put("AccountName", username);
-        newEntry.put("Password", password);
-
-        // Determina il percorso del file usando il nome dell'account
-        String filePath = username + ".json";
-        
-
-        try (FileWriter fileWriter = new FileWriter(filePath)) {
-            // Scrivi il JSONObject nel file
-            fileWriter.write(newEntry.toString(4)); // Il parametro 4 è per l'indentazione del JSON
-            System.out.println("Informazioni aggiunte con successo.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-        
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

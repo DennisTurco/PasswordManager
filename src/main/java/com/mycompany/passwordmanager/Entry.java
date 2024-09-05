@@ -42,15 +42,6 @@ public class Entry {
         return accountName + password + email + note;
     }
 
-    // Inner class for TableActionCellRender
-    public static class TableActionCellRender extends DefaultTableCellRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable jtable, Object o, boolean isSelected, boolean hasFocus, int row, int column) {
-            PanelAction action = new PanelAction();
-            return action;
-        }
-    }
 
     // Table Model for Entries
     public static class PasswordTableModel extends AbstractTableModel {
@@ -84,24 +75,7 @@ public class Entry {
             }
         }
 
-        @Override
-        public String getColumnName(int column) {
-            return columnNames[column];
-        }
-
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            if (columnIndex == 4) {
-                return PanelAction.class;
-            }
-            return String.class;
-        }
-
-        public void addEntry(Entry entry) {
-            entries.add(entry);
-            int rowIndex = entries.size() - 1;
-            fireTableRowsInserted(rowIndex, rowIndex);
-        }
+        
     }
 }
 
