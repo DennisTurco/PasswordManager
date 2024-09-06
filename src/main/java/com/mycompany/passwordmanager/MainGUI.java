@@ -429,7 +429,7 @@ public class MainGUI extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4", "Actions"
+                "Account name", "Password", "Email", "Note", "Actions"
             }
         ) {
             boolean[] canEdit = new boolean [] {
