@@ -165,7 +165,7 @@ public class LoginGUI extends javax.swing.JFrame {
             return;
         }
 
-        MainGUI mainFrame = new MainGUI(accountName);
+        MainGUI mainFrame = new MainGUI(accountName);  
         mainFrame.setVisible(true);
 
         dispose();  // Chiude il frame corrente
