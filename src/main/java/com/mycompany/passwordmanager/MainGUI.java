@@ -1,22 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.mycompany.passwordmanager.Entry;
+import com.mycompany.passwordmanager.JsonManager;
+import com.mycompany.passwordmanager.LoginGUI;
+import com.mycompany.passwordmanager.RegisterGUI;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Image;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +19,17 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import table.TableActionCellEditor;
+import table.TableActionCellRender;
+import table.TableActionEvent;
 
 
 public class MainGUI extends javax.swing.JFrame {
@@ -40,12 +42,10 @@ public class MainGUI extends javax.swing.JFrame {
         initComponents();
         adjustMenuAlignment();
         
-        //non viene mostrato nella colonna delle Actions il PanelAction
         // logo application
         Image icon = new ImageIcon(this.getClass().getResource("/images/logoIcon.png")).getImage();
         this.setIconImage(icon);
 
- 
         boolean logged = username != null;
         LoginMenu.setEnabled(!logged);
         LogoutMenu.setEnabled(logged);
@@ -66,6 +66,7 @@ public class MainGUI extends javax.swing.JFrame {
             // Sostituisce la parola login con il nome dell'account loggato
             LoginMenu.setText(username);
         }
+       
     }
     
     private void adjustMenuAlignment() {
@@ -122,7 +123,7 @@ public class MainGUI extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         PasswordSearchButton = new javax.swing.JButton();
         AccountSearch = new javax.swing.JTextField();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         PasswordTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         EntryListMenu = new javax.swing.JMenu();
@@ -422,40 +423,40 @@ public class MainGUI extends javax.swing.JFrame {
 
         PasswordTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "Account name", "Password", "Email", "Note", "Actions"
+                "AccountName", "Email", "Password", "Note", "Action"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false
+                false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        PasswordTable.setRowHeight(50);
-        jScrollPane3.setViewportView(PasswordTable);
+        PasswordTable.setRowHeight(40);
+        PasswordTable.setSelectionBackground(new java.awt.Color(56, 138, 112));
+        jScrollPane1.setViewportView(PasswordTable);
 
         javax.swing.GroupLayout EntryListPanelLayout = new javax.swing.GroupLayout(EntryListPanel);
         EntryListPanel.setLayout(EntryListPanelLayout);
         EntryListPanelLayout.setHorizontalGroup(
             EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EntryListPanelLayout.createSequentialGroup()
-                .addContainerGap(266, Short.MAX_VALUE)
+                .addContainerGap(268, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(81, 81, 81)
                 .addComponent(AccountSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PasswordSearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
-            .addComponent(jScrollPane3)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EntryListPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 704, Short.MAX_VALUE)
+                .addContainerGap())
         );
         EntryListPanelLayout.setVerticalGroup(
             EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -467,7 +468,7 @@ public class MainGUI extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addComponent(PasswordSearchButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -835,10 +836,54 @@ public class MainGUI extends javax.swing.JFrame {
 
 
     private void displayEntries(List<Entry> entries) {
-        Entry.PasswordTableModel passwordTableModel = new Entry.PasswordTableModel(entries);
-        PasswordTable.setModel(passwordTableModel);
-        System.out.println("enter1");
+        DefaultTableModel model = new DefaultTableModel(new Object[]{"Account Name", "Password", "Email", "Note", "Actions"}, 0);
+        PasswordTable.setModel(model);
+
+        for (int i = 0; i < entries.size(); i++) {
+            Entry entry = entries.get(i);
+
+            // Add rows if necessary
+            if (i >= model.getRowCount()) {
+                model.addRow(new Object[]{"", "", "", "", ""});
+            }
+
+            // Set values for each cell
+            model.setValueAt(entry.getAccountName(), i, 0);
+            model.setValueAt(entry.getPassword(), i, 1);
+            model.setValueAt(entry.getEmail(), i, 2);
+            model.setValueAt(entry.getNote(), i, 3);
+            model.setValueAt("Actions", i, 4); // Placeholder for actions
+        }
         
+        TableActionEvent event = new TableActionEvent() {
+            @Override
+            public void onEdit(int row) {
+                System.out.println("Edit row : " + row);
+            }
+
+            @Override
+            public void onDelete(int row) {
+                if (PasswordTable.isEditing()) {
+                    PasswordTable.getCellEditor().stopCellEditing();
+                }
+                DefaultTableModel model = (DefaultTableModel) PasswordTable.getModel();
+                model.removeRow(row);
+            }
+
+            @Override
+            public void onView(int row) {
+                System.out.println("View row : " + row);
+            }
+        };
+        PasswordTable.getColumnModel().getColumn(4).setCellRenderer(new TableActionCellRender());
+        PasswordTable.getColumnModel().getColumn(4).setCellEditor(new TableActionCellEditor(event));
+        PasswordTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int i, int i1) {
+                setHorizontalAlignment(SwingConstants.RIGHT);
+                return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1);
+            }
+        });
     }
 
     private boolean isUserLoggedIn() {
@@ -997,7 +1042,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
 }
