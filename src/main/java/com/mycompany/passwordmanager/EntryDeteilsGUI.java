@@ -4,15 +4,21 @@
  */
 package com.mycompany.passwordmanager;
 
-import java.util.List;
-import javax.swing.JOptionPane;
-
 
 public class EntryDeteilsGUI extends javax.swing.JFrame {
 
+    private String username;
+    private JsonManager jsonManager = new JsonManager();
     
-    public EntryDeteilsGUI() {
+
+    
+    public EntryDeteilsGUI(Entry entry) {
         initComponents();
+        
+        AccountName.setText(entry.getAccountName());
+        Email.setText(entry.getEmail());
+        Password.setText(entry.getPassword());
+        Note.setText(entry.getNote());
     }
 
     /**
@@ -35,6 +41,7 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
         Email = new javax.swing.JTextField();
         AccountName = new javax.swing.JTextField();
         CancelButton = new javax.swing.JButton();
+        SaveButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -87,14 +94,32 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
             }
         });
 
+        SaveButton.setBackground(new java.awt.Color(0, 102, 255));
+        SaveButton.setText("Save");
+        SaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(210, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addGap(206, 206, 206))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(199, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(206, 206, 206))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(104, 104, 104))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(CancelButton)
+                        .addGap(30, 30, 30)
+                        .addComponent(SaveButton)
+                        .addGap(126, 126, 126))))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(79, 79, 79)
@@ -106,26 +131,25 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(8, 8, 8)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(63, 63, 63)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(CancelButton)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(AccountName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(31, 31, 31)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap(99, Short.MAX_VALUE)))
+                    .addGap(63, 63, 63)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(AccountName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(133, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addContainerGap(370, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 149, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SaveButton)
+                    .addComponent(CancelButton))
+                .addGap(68, 68, 68))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(64, 64, 64)
@@ -140,16 +164,9 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4))
-                    .addGap(18, 18, 18)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(28, 28, 28)
-                            .addComponent(CancelButton))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(45, 45, 45)
-                            .addComponent(jLabel5)))
-                    .addContainerGap(64, Short.MAX_VALUE)))
+                    .addGap(63, 63, 63)
+                    .addComponent(jLabel5)
+                    .addContainerGap(166, Short.MAX_VALUE)))
         );
 
         pack();
@@ -158,23 +175,10 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
 
     private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
 
-        if(Password.getText().isEmpty()){
-           // SecurityPassword2.setText(" ");
-        }
-        else{
-            // Aggiornare la JLabel con la forza calcolata
-            //CalculateSecurityPassword(Password, SecurityPassword);
-        }
     }//GEN-LAST:event_PasswordActionPerformed
 
     private void PasswordUpdate(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PasswordUpdate
-        if(Password.getText().isEmpty()){
-           // SecurityPassword2.setText(" ");
-        }
-        else{
-            // Aggiornare la JLabel con la forza calcolata
-           // CalculateSecurityPassword(Password, SecurityPassword2);
-        }
+
     }//GEN-LAST:event_PasswordUpdate
 
     private void EmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailActionPerformed
@@ -182,7 +186,6 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_EmailActionPerformed
 
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
-
         dispose();  // Chiude il frame
     }//GEN-LAST:event_CancelButtonActionPerformed
 
@@ -190,6 +193,16 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
         
     }//GEN-LAST:event_AccountNameActionPerformed
 
+    private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
+        
+    }//GEN-LAST:event_SaveButtonActionPerformed
+
+
+    
+
+    private boolean isUserLoggedIn() {
+        return username != null && !username.isEmpty();
+    }
     /**
      * @param args the command line arguments
      */
@@ -220,7 +233,7 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new EntryDeteilsGUI().setVisible(true);
+                new EntryDeteilsGUI(null).setVisible(true);
             }
         });
     }
@@ -231,6 +244,7 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
     private javax.swing.JTextField Email;
     private javax.swing.JTextArea Note;
     private javax.swing.JTextField Password;
+    private javax.swing.JButton SaveButton;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

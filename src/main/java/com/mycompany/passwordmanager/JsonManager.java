@@ -78,25 +78,38 @@ public class JsonManager implements IJsonManager{
 
         try {
             File file = new File(filePath);
-            JSONArray jsonArray;
+            JSONObject jsonObject;
 
             if (file.exists()) {
                 String content = new String(Files.readAllBytes(Paths.get(filePath)));
                 if (content.isEmpty()) {
-                    jsonArray = new JSONArray();
+                    // Crea un nuovo oggetto JSON se il file è vuoto
+                    jsonObject = new JSONObject();
+                    jsonObject.put("AccountName", username);  // Imposta il nome dell'account principale
+                    jsonObject.put("Password", password);           // Puoi modificare o settare la password se necessario
+                    jsonObject.put("EntryList", new JSONArray()); // Crea un array vuoto di EntryList
                 } else {
-                    jsonArray = new JSONArray(content);
+                    // Leggi l'oggetto JSON esistente
+                    jsonObject = new JSONObject(content);
                 }
             } else {
-                jsonArray = new JSONArray();
+                // Crea un nuovo oggetto JSON se il file non esiste
+                jsonObject = new JSONObject();
+                jsonObject.put("AccountName", username);
+                jsonObject.put("Password",password);
+                jsonObject.put("EntryList", new JSONArray());
             }
 
-            jsonArray.put(newEntry);
+            // Ottieni l'array EntryList esistente e aggiungi il nuovo entry
+            JSONArray entryList = jsonObject.getJSONArray("EntryList");
+            entryList.put(newEntry);
 
+            // Scrivi il file aggiornato
             try (FileWriter fileWriter = new FileWriter(filePath)) {
-                fileWriter.write(jsonArray.toString(4));
+                fileWriter.write(jsonObject.toString(4));  // Formatta con indentazione
             }
 
+            // Controlla i campi obbligatori
             if (accountName.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 JOptionPane.showMessageDialog(object, "Enter the text in the required fields", "Failure", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -108,7 +121,7 @@ public class JsonManager implements IJsonManager{
     }
 
     @Override
-    public List<Entry> GetEntryListFromJSON(String accountSearch, String entryToDelete, String username) {
+    public List<Entry> GetEntryListFromJSON(String accountSearch, String username) {
         String filePath = username + ".json";
         StringBuilder jsonData = new StringBuilder();
 
@@ -118,23 +131,25 @@ public class JsonManager implements IJsonManager{
                 jsonData.append(line);
             }
 
-            JSONArray jsonArray = new JSONArray(jsonData.toString());
+            // Parsing the main JSON object
+            JSONObject jsonObject = new JSONObject(jsonData.toString());
+
+            // Extract the EntryList array
+            JSONArray entryList = jsonObject.getJSONArray("EntryList");
             List<Entry> entries = new ArrayList<>();
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String accountName = jsonObject.optString("AccountName");
-                String password = jsonObject.optString("Password");
-                String email = jsonObject.optString("Email");
-                String note = jsonObject.optString("Note");
+            // Loop through the entries in EntryList
+            for (int i = 0; i < entryList.length(); i++) {
+                JSONObject entryObject = entryList.getJSONObject(i);
+                String accountName = entryObject.optString("AccountName");
+                String password = entryObject.optString("Password");
+                String email = entryObject.optString("Email");
+                String note = entryObject.optString("Note");
 
                 Entry entry = new Entry(accountName, password, email, note);
+                
+                entries.add(entry);
 
-                if (!(entryToDelete != null && !entryToDelete.isEmpty() && accountName.equals(entryToDelete))) {
-                    if (accountSearch == null || accountSearch.isEmpty() || accountName.toLowerCase().contains(accountSearch.toLowerCase())) {
-                        entries.add(entry);
-                    }
-                }
             }
 
             return entries;
@@ -142,29 +157,55 @@ public class JsonManager implements IJsonManager{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
     // Metodo per salvare le voci aggiornate nel file JSON (opzionale, se necessario)
     @Override
-    public void saveEntriesToJson(List<Entry> entries, String username) {
-        String filePath = username + ".json";
-        JSONArray jsonArray = new JSONArray();
+    public void saveEntriesToJson(List<Entry> entries, Account account) {
+        String filePath = account.username + ".json";
+        JSONObject jsonObject = new JSONObject();
 
+        // Creare un JSONArray per EntryList
+        JSONArray entryList = new JSONArray();
+
+        // Popolare l'array con le entries passate alla funzione
         for (Entry entry : entries) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("AccountName", entry.getAccountName());
-            jsonObject.put("Password", entry.getPassword());
-            jsonObject.put("Email", entry.getEmail());
-            jsonObject.put("Note", entry.getNote());
-            jsonArray.put(jsonObject);
+            JSONObject entryObject = new JSONObject();
+            entryObject.put("AccountName", entry.getAccountName());
+            entryObject.put("Password", entry.getPassword());
+            entryObject.put("Email", entry.getEmail());
+            entryObject.put("Note", entry.getNote());
+            entryList.put(entryObject);
         }
 
-        try (FileWriter fileWriter = new FileWriter(filePath)) {
-            fileWriter.write(jsonArray.toString(4)); // Indentazione di 4 spazi per formattare il JSON
+        try {
+            File file = new File(filePath);
+
+            if (file.exists()) {
+                // Se il file esiste, leggerne il contenuto
+                String content = new String(Files.readAllBytes(Paths.get(filePath)));
+                if (!content.isEmpty()) {
+                    // Aggiorna il contenuto del file esistente con le nuove entries
+                    jsonObject = new JSONObject(content);
+                }
+            }
+
+            // Imposta i campi principali
+            jsonObject.put("AccountName", account.username);  // Mantieni o aggiorna il nome dell'account principale
+            jsonObject.put("Password", jsonObject.optString("Password", account.password));  // Mantieni la password se esiste
+            jsonObject.put("EntryList", entryList);  // Sostituisci la EntryList con le nuove entries
+
+            // Scrivi l'oggetto JSON aggiornato nel file
+            try (FileWriter fileWriter = new FileWriter(filePath)) {
+                fileWriter.write(jsonObject.toString(4)); // Formatta il JSON con 4 spazi
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
-        }    }
+        }
+    }
 
     @Override
     public void createUserFile(String username, String password) {

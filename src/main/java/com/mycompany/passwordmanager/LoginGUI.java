@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -19,6 +15,9 @@ public class LoginGUI extends javax.swing.JFrame {
     
     //serve per richiamare i metodi della classe, inquesto caso, JsonManager
     private JsonManager jsonManager = new JsonManager();
+    
+    private boolean isPasswordVisible = false;  // Inizialmente la password è nascosta
+
     
     public LoginGUI() {
         initComponents();
@@ -48,6 +47,7 @@ public class LoginGUI extends javax.swing.JFrame {
         RegisterButton = new javax.swing.JToggleButton();
         NoLoginButton = new javax.swing.JToggleButton();
         Password = new javax.swing.JPasswordField();
+        SeePasswordButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Password Generator");
@@ -92,6 +92,13 @@ public class LoginGUI extends javax.swing.JFrame {
             }
         });
 
+        SeePasswordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/view.png"))); // NOI18N
+        SeePasswordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SeePasswordButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,11 +126,13 @@ public class LoginGUI extends javax.swing.JFrame {
                                 .addGroup(layout.createSequentialGroup()
                                     .addGap(33, 33, 33)
                                     .addComponent(jLabel2)))
-                            .addComponent(Password, javax.swing.GroupLayout.Alignment.LEADING)))
+                            .addComponent(Password, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(SeePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(175, 175, 175)
                         .addComponent(LoginButton)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,7 +146,9 @@ public class LoginGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SeePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(LoginButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
@@ -164,8 +175,9 @@ public class LoginGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Incorrect username or password", "Failure", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        MainGUI mainFrame = new MainGUI(accountName);
+        
+        Account account = new Account (accountName, password );
+        MainGUI mainFrame = new MainGUI(account);
         mainFrame.setVisible(true);
 
         dispose();  // Chiude il frame corrente
@@ -194,6 +206,19 @@ public class LoginGUI extends javax.swing.JFrame {
     private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_PasswordActionPerformed
+
+    private void SeePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeePasswordButtonActionPerformed
+                                   
+        if (isPasswordVisible) {
+            // Nascondi la password
+            Password.setEchoChar('•');  // Imposta il carattere '•' per nascondere la password
+            isPasswordVisible = false;
+        } else {
+            // Mostra la password
+            Password.setEchoChar((char) 0);  // Imposta il carattere nullo per mostrare la password
+            isPasswordVisible = true;
+        }
+    }//GEN-LAST:event_SeePasswordButtonActionPerformed
     
    
     /**
@@ -250,6 +275,7 @@ public class LoginGUI extends javax.swing.JFrame {
     private javax.swing.JToggleButton NoLoginButton;
     private javax.swing.JPasswordField Password;
     private javax.swing.JToggleButton RegisterButton;
+    private javax.swing.JButton SeePasswordButton;
     private javax.swing.JTextField Username;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

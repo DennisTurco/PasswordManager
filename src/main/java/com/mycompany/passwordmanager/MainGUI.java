@@ -5,6 +5,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,12 +30,13 @@ import table.TableActionEvent;
 
 
 public class MainGUI extends javax.swing.JFrame {
-    private String username;
+    private Account account;
     private JsonManager jsonManager = new JsonManager();
+
     
     
-    public MainGUI(String username) {
-        this.username = username;
+    public MainGUI(Account account) {
+        this.account = account ;
         initComponents();
         adjustMenuAlignment();
         
@@ -40,7 +44,7 @@ public class MainGUI extends javax.swing.JFrame {
         Image icon = new ImageIcon(this.getClass().getResource("/images/logoIcon.png")).getImage();
         this.setIconImage(icon);
 
-        boolean logged = username != null;
+        boolean logged = account != null;
         LoginMenu.setEnabled(!logged);
         LogoutMenu.setEnabled(logged);
         LoginMenu2.setEnabled(!logged);
@@ -53,12 +57,12 @@ public class MainGUI extends javax.swing.JFrame {
         MainPanel.setEnabledAt(2, logged);
         
         if (logged) {
-            List<Entry> entries = jsonManager.GetEntryListFromJSON(null, null, username);
+            List<Entry> entries = jsonManager.GetEntryListFromJSON(null, account.username);
 
             displayEntries(entries);
 
             // Sostituisce la parola login con il nome dell'account loggato
-            LoginMenu.setText(username);
+            LoginMenu.setText(account.username);
         }
        
     }
@@ -439,17 +443,14 @@ public class MainGUI extends javax.swing.JFrame {
         EntryListPanelLayout.setHorizontalGroup(
             EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EntryListPanelLayout.createSequentialGroup()
-                .addContainerGap(268, Short.MAX_VALUE)
+                .addContainerGap(255, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(81, 81, 81)
+                .addGap(92, 92, 92)
                 .addComponent(AccountSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PasswordSearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EntryListPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 704, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane1)
         );
         EntryListPanelLayout.setVerticalGroup(
             EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -461,8 +462,7 @@ public class MainGUI extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addComponent(PasswordSearchButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE))
         );
 
         MainPanel.addTab("Entry list", EntryListPanel);
@@ -608,7 +608,7 @@ public class MainGUI extends javax.swing.JFrame {
         dispose();
     }
     private void SavePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SavePasswordButtonActionPerformed
-        jsonManager.WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText(), username, this);
+        jsonManager.WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText(), account.username, this);
         
         JOptionPane.showMessageDialog(this, "Password saved successfully!", "Password saved", JOptionPane.OK_OPTION);
         
@@ -627,7 +627,7 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void PasswordSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordSearchButtonActionPerformed
        String accountSearch = AccountSearch.getText().trim();
-        List<Entry> filteredEntries = jsonManager.GetEntryListFromJSON(accountSearch, null, username);
+        List<Entry> filteredEntries = jsonManager.GetEntryListFromJSON(accountSearch, account.username);
         displayEntries(filteredEntries);
     }//GEN-LAST:event_PasswordSearchButtonActionPerformed
 
@@ -636,9 +636,9 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_EmailActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
-        jsonManager.WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText(), username, this);        JOptionPane.showMessageDialog(this, "Password saved successfully!", "Password saved", JOptionPane.OK_OPTION);
+        jsonManager.WritePasswordToJSON(AccountName.getText(), Email.getText(), Password.getText(), Note.getText(), account.username, this);        JOptionPane.showMessageDialog(this, "Password saved successfully!", "Password saved", JOptionPane.OK_OPTION);
         if (isUserLoggedIn()) {
-            List<Entry> updatedEntries = jsonManager.GetEntryListFromJSON(null, null, username);
+            List<Entry> updatedEntries = jsonManager.GetEntryListFromJSON(null, account.username);
             displayEntries(updatedEntries);
         }
         
@@ -652,17 +652,6 @@ public class MainGUI extends javax.swing.JFrame {
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
         dispose();  // Chiude il frame
     }//GEN-LAST:event_CancelButtonActionPerformed
-
-    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
-        
-        if(Password.getText().isEmpty()){
-            SecurityPassword2.setText(" ");
-        }
-        else{
-            // Aggiornare la JLabel con la forza calcolata
-            CalculateSecurityPassword(Password, SecurityPassword);
-        }
-    }//GEN-LAST:event_PasswordActionPerformed
 
     private void SaveButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButton2ActionPerformed
         MainPanel.setSelectedComponent(NewEntryPanel);
@@ -774,16 +763,6 @@ public class MainGUI extends javax.swing.JFrame {
         loginGUI();
     }//GEN-LAST:event_LogoutClick
 
-    private void PasswordUpdate(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PasswordUpdate
-        if(Password.getText().isEmpty()){
-            SecurityPassword2.setText(" ");
-        }
-        else{
-            // Aggiornare la JLabel con la forza calcolata
-            CalculateSecurityPassword(Password, SecurityPassword2);
-        }
-    }//GEN-LAST:event_PasswordUpdate
-
     private void GeneratePasswordUpdate(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_GeneratePasswordUpdate
         if(OutputPassword.getText().isEmpty()){
             SecurityPassword.setText(" ");
@@ -796,9 +775,30 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void EntrySearch(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_EntrySearch
         String accountSearch = AccountSearch.getText().trim();
-        List<Entry> filteredEntries = jsonManager.GetEntryListFromJSON(accountSearch, null, username);
+        List<Entry> filteredEntries = jsonManager.GetEntryListFromJSON(accountSearch, account.username);
         displayEntries(filteredEntries);
     }//GEN-LAST:event_EntrySearch
+
+    private void PasswordUpdate(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PasswordUpdate
+        if(Password.getText().isEmpty()){
+            SecurityPassword2.setText(" ");
+        }
+        else{
+            // Aggiornare la JLabel con la forza calcolata
+            CalculateSecurityPassword(Password, SecurityPassword2);
+        }
+    }//GEN-LAST:event_PasswordUpdate
+
+    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
+
+        if(Password.getText().isEmpty()){
+            SecurityPassword2.setText(" ");
+        }
+        else{
+            // Aggiornare la JLabel con la forza calcolata
+            CalculateSecurityPassword(Password, SecurityPassword);
+        }
+    }//GEN-LAST:event_PasswordActionPerformed
 
 
    private void displayEntries(List<Entry> entries) {
@@ -806,27 +806,28 @@ public class MainGUI extends javax.swing.JFrame {
     PasswordTable.setModel(model);
 
     // Inizia il ciclo da 1 per saltare la prima riga
-    for (int i = 1; i < entries.size(); i++) {
+    for (int i = 0; i < entries.size(); i++) {
         Entry entry = entries.get(i);
 
         // Aggiungi righe se necessario
-        if (i - 1 >= model.getRowCount()) {
+        if (i  >= model.getRowCount()) {
             model.addRow(new Object[]{"", "", "", "", ""});
         }
 
         // Imposta i valori per ogni cella
-        model.setValueAt(entry.getAccountName(), i - 1, 0);  // Usa i - 1 per l'indice della tabella
-        model.setValueAt("•••••••••••••", i - 1, 1);         // Password nascosta
-        model.setValueAt(entry.getEmail(), i - 1, 2);
-        model.setValueAt(entry.getNote(), i - 1, 3);
-        model.setValueAt("Actions", i - 1, 4);               // Placeholder per le azioni
+        model.setValueAt(entry.getAccountName(), i , 0);  // Usa i - 1 per l'indice della tabella
+        model.setValueAt("•••••••••••••", i , 1);         // Password nascosta
+        model.setValueAt(entry.getEmail(), i , 2);
+        model.setValueAt(entry.getNote(), i , 3);
+        model.setValueAt("Actions", i , 4);               // Placeholder per le azioni
     }
 
     // Configura gli eventi e il renderer della tabella
     TableActionEvent event = new TableActionEvent() {
         @Override
         public void onEdit(int row) {
-            System.out.println("Edit row : " + row);
+               EntryDeteilsGUI entryDeteilsFrame = new EntryDeteilsGUI(entries.get(row));
+                entryDeteilsFrame.setVisible(true);
         }
 
         @Override
@@ -839,12 +840,19 @@ public class MainGUI extends javax.swing.JFrame {
 
             entries.remove(row);
 
-            jsonManager.saveEntriesToJson(entries, username);
+            jsonManager.saveEntriesToJson(entries, account);
         }
 
         @Override
         public void onCopy(int row) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            
+            
+            // Copia la password negli appunti
+            StringSelection stringSelection = new StringSelection(entries.get(row).getPassword());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+
+            System.out.println("Password copiata negli appunti: " + entries.get(row).getPassword());
         }
     };
 
@@ -862,7 +870,7 @@ public class MainGUI extends javax.swing.JFrame {
 
 
     private boolean isUserLoggedIn() {
-        return username != null && !username.isEmpty();
+        return account.username != null && !account.username.isEmpty();
     }
 
     private String generatePassword(int length, boolean useLower, boolean useUpper, boolean useNumbers, boolean useSymbols) {

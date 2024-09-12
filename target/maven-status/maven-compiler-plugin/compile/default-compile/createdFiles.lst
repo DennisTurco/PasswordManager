@@ -7,6 +7,7 @@ com\mycompany\passwordmanager\MainGUI$5.class
 com\mycompany\passwordmanager\RegisterGUI$1.class
 com\mycompany\passwordmanager\LoginGUI$3.class
 com\mycompany\passwordmanager\MainGUI$9.class
+com\mycompany\passwordmanager\RegisterGUI$5.class
 table\PanelAction.class
 com\mycompany\passwordmanager\EntryDeteilsGUI$3.class
 com\mycompany\passwordmanager\MainGUI$17.class
@@ -25,15 +26,18 @@ com\mycompany\passwordmanager\MainGUI$8.class
 com\mycompany\passwordmanager\EntryDeteilsGUI$4.class
 com\mycompany\passwordmanager\MainGUI$4.class
 com\mycompany\passwordmanager\IJsonManager.class
+com\mycompany\passwordmanager\LoginGUI$7.class
 com\mycompany\passwordmanager\MainGUI$26.class
 table\PanelAction$3.class
 com\mycompany\passwordmanager\MainGUI$20.class
+com\mycompany\passwordmanager\EntryDeteilsGUI$7.class
 table\TableActionEvent.class
 com\mycompany\passwordmanager\MainGUI$18.class
 com\mycompany\passwordmanager\RegisterGUI$3.class
 com\mycompany\passwordmanager\EntryDeteilsGUI$5.class
 com\mycompany\passwordmanager\MainGUI$21.class
 com\mycompany\passwordmanager\Entry.class
+com\mycompany\passwordmanager\Account.class
 com\mycompany\passwordmanager\MainGUI$15.class
 com\mycompany\passwordmanager\MainGUI$11.class
 com\mycompany\passwordmanager\LoginGUI$1.class
@@ -47,6 +51,7 @@ table\PanelAction$4.class
 com\mycompany\passwordmanager\MainGUI$7.class
 com\mycompany\passwordmanager\MainGUI$19.class
 com\mycompany\passwordmanager\MainGUI$6.class
+com\mycompany\passwordmanager\RegisterGUI$4.class
 com\mycompany\passwordmanager\MainGUI$22.class
 com\mycompany\passwordmanager\JsonManager.class
 table\ActionButton.class

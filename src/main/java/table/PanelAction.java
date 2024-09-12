@@ -5,9 +5,11 @@
 package table;
 
 import com.mycompany.passwordmanager.EntryDeteilsGUI;
-import com.mycompany.passwordmanager.LoginGUI;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 
 /**
  *
@@ -27,8 +29,6 @@ public class PanelAction extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 event.onEdit(row);
-                EntryDeteilsGUI entryDeteilsFrame = new EntryDeteilsGUI();
-                entryDeteilsFrame.setVisible(true);
             }
         });
         cmdDelete.addActionListener(new ActionListener() {
@@ -113,7 +113,7 @@ public class PanelAction extends javax.swing.JPanel {
     }//GEN-LAST:event_cmdDeleteActionPerformed
 
     private void cmdCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCopyActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_cmdCopyActionPerformed
 
 

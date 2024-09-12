@@ -5,16 +5,13 @@
 package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.Color;
 import java.awt.Image;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 
 public class RegisterGUI extends javax.swing.JFrame {
@@ -24,6 +21,8 @@ public class RegisterGUI extends javax.swing.JFrame {
      */
     
     private JsonManager jsonManager = new JsonManager();
+    private boolean isPasswordVisible = false;  // Inizialmente la password è nascosta
+
     
     public RegisterGUI() {
         initComponents();
@@ -47,11 +46,15 @@ public class RegisterGUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         Username = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        Password = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        ConfirmPassword = new javax.swing.JTextField();
         RegisterButton = new javax.swing.JButton();
         CloseButton = new javax.swing.JButton();
+        SeePasswordButton = new javax.swing.JButton();
+        SeePasswordButton2 = new javax.swing.JButton();
+        ConfirmPassword = new javax.swing.JPasswordField();
+        Password = new javax.swing.JPasswordField();
+        SecurityPassword2 = new javax.swing.JLabel();
+        SecurityPassword3 = new javax.swing.JLabel();
 
         jLabel4.setText("Password");
 
@@ -83,6 +86,20 @@ public class RegisterGUI extends javax.swing.JFrame {
             }
         });
 
+        SeePasswordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/view.png"))); // NOI18N
+        SeePasswordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SeePasswordButtonActionPerformed(evt);
+            }
+        });
+
+        SeePasswordButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/view.png"))); // NOI18N
+        SeePasswordButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SeePasswordButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -98,22 +115,37 @@ public class RegisterGUI extends javax.swing.JFrame {
                         .addGap(105, 105, 105)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(194, 194, 194)
+                        .addGap(235, 235, 235)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(235, 235, 235)
+                        .addComponent(jLabel3))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(41, 41, 41)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(ConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGap(194, 194, 194)
+                                            .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addContainerGap()
+                                            .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(ConfirmPassword, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(26, 26, 26)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(22, 22, 22)
-                                .addComponent(jLabel5))
+                                .addComponent(SeePasswordButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(SecurityPassword3, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(41, 41, 41)
-                                .addComponent(jLabel3)))))
-                .addContainerGap(128, Short.MAX_VALUE))
+                                .addComponent(SeePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(47, 47, 47)
+                                .addComponent(SecurityPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(125, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,13 +158,22 @@ public class RegisterGUI extends javax.swing.JFrame {
                 .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(SeePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(SecurityPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(25, 25, 25)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(ConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(SeePasswordButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(SecurityPassword3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(RegisterButton)
                     .addComponent(CloseButton))
@@ -171,6 +212,93 @@ public class RegisterGUI extends javax.swing.JFrame {
         dispose(); 
     }//GEN-LAST:event_CloseButtonActionPerformed
 
+    private void SeePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeePasswordButtonActionPerformed
+
+        if (isPasswordVisible) {
+            // Nascondi la password
+            Password.setEchoChar('•');  // Imposta il carattere '•' per nascondere la password
+            isPasswordVisible = false;
+        } else {
+            // Mostra la password
+            Password.setEchoChar((char) 0);  // Imposta il carattere nullo per mostrare la password
+            isPasswordVisible = true;
+        }
+    }//GEN-LAST:event_SeePasswordButtonActionPerformed
+
+    private void SeePasswordButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeePasswordButton2ActionPerformed
+        if (isPasswordVisible) {
+            // Nascondi la password
+            Password.setEchoChar('•');  // Imposta il carattere '•' per nascondere la password
+            isPasswordVisible = false;
+        } else {
+            // Mostra la password
+            Password.setEchoChar((char) 0);  // Imposta il carattere nullo per mostrare la password
+            isPasswordVisible = true;
+        }
+    }//GEN-LAST:event_SeePasswordButton2ActionPerformed
+    
+    private void CalculateSecurityPassword(JTextField passwordInput, JLabel securityOutput) {
+
+    // Calcolare la forza della password inserita
+    int strength = calculatePasswordStrength(passwordInput.getText());
+    String strengthText = getStrengthText(strength); // Ottiene il testo descrittivo della forza
+
+    // Aggiorna le JLabel SecurityPassword2 e SecurityPassword3 con la forza calcolata
+    SecurityPassword2.setText("Password Strength: " + strengthText);
+    SecurityPassword3.setText("Password Strength: " + strengthText);
+
+    // Cambia il colore della JLabel securityOutput in base alla forza della password
+    switch (strengthText) {
+        case "Very Weak":
+        case "Weak":
+            securityOutput.setForeground(Color.RED);  // Colore rosso per password debole
+            break;
+        case "Medium":
+            securityOutput.setForeground(Color.ORANGE);  // Colore arancione per password media
+            break;
+        case "Strong":
+            securityOutput.setForeground(Color.YELLOW);  // Colore giallo per password forte
+            break;
+        default:  // Password molto forte
+            securityOutput.setForeground(Color.GREEN);  // Colore verde per password molto forte
+            break;
+    }
+
+    // Aggiorna l'interfaccia utente
+    validate();
+    repaint();
+}
+
+    private int calculatePasswordStrength(String password) {
+        int length = password.length();
+        if (length < 4) {
+            return 0; // Password molto debole
+        } else if (length < 8) {
+            return 1; // Password debole
+        } else if (length < 12) {
+            return 2; // Password media
+        }  else if (length < 16) {
+            return 3; // Password forte
+        } else {
+            return 4; // Password molto forte
+        }
+    }
+
+    private String getStrengthText(int strength) {
+        switch (strength) {
+            case 0:
+                return "Very Weak";
+            case 1:
+                return "Weak";
+            case 2:
+                return "Medium";
+            case 3:
+                return "Strong";
+            default:
+                return "Very Strong";
+        }
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -189,9 +317,13 @@ public class RegisterGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CloseButton;
-    private javax.swing.JTextField ConfirmPassword;
-    private javax.swing.JTextField Password;
+    private javax.swing.JPasswordField ConfirmPassword;
+    private javax.swing.JPasswordField Password;
     private javax.swing.JButton RegisterButton;
+    private javax.swing.JLabel SecurityPassword2;
+    private javax.swing.JLabel SecurityPassword3;
+    private javax.swing.JButton SeePasswordButton;
+    private javax.swing.JButton SeePasswordButton2;
     private javax.swing.JTextField Username;
     private javax.swing.JTextField Username2;
     private javax.swing.JLabel jLabel1;
