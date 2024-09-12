@@ -4,6 +4,11 @@
  */
 package table;
 
+import com.mycompany.passwordmanager.EntryDeteilsGUI;
+import com.mycompany.passwordmanager.LoginGUI;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  *
  * @author Lorenzo
@@ -16,7 +21,29 @@ public class PanelAction extends javax.swing.JPanel {
     public PanelAction() {
         initComponents();
     }
-
+    
+    public void initEvent(TableActionEvent event, int row) {
+        cmdEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                event.onEdit(row);
+                EntryDeteilsGUI entryDeteilsFrame = new EntryDeteilsGUI();
+                entryDeteilsFrame.setVisible(true);
+            }
+        });
+        cmdDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                event.onDelete(row);
+            }
+        });
+        cmdCopy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                event.onCopy(row);
+            }
+        });
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,7 +55,7 @@ public class PanelAction extends javax.swing.JPanel {
 
         cmdEdit = new table.ActionButton();
         cmdDelete = new table.ActionButton();
-        cmdView = new table.ActionButton();
+        cmdCopy = new table.ActionButton();
 
         cmdEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/pencil.png"))); // NOI18N
         cmdEdit.addActionListener(new java.awt.event.ActionListener() {
@@ -44,10 +71,10 @@ public class PanelAction extends javax.swing.JPanel {
             }
         });
 
-        cmdView.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/view.png"))); // NOI18N
-        cmdView.addActionListener(new java.awt.event.ActionListener() {
+        cmdCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/copy.png"))); // NOI18N
+        cmdCopy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdViewActionPerformed(evt);
+                cmdCopyActionPerformed(evt);
             }
         });
 
@@ -61,7 +88,7 @@ public class PanelAction extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(cmdDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(cmdView, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmdCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -69,7 +96,7 @@ public class PanelAction extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmdView, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmdCopy, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(cmdDelete, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cmdEdit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)))
@@ -78,25 +105,22 @@ public class PanelAction extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmdEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEditActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_cmdEditActionPerformed
 
     private void cmdDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdDeleteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmdDeleteActionPerformed
 
-    private void cmdViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdViewActionPerformed
+    private void cmdCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCopyActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cmdViewActionPerformed
+    }//GEN-LAST:event_cmdCopyActionPerformed
 
-    void initEvent(TableActionEvent event, int row) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private table.ActionButton cmdCopy;
     private table.ActionButton cmdDelete;
     private table.ActionButton cmdEdit;
-    private table.ActionButton cmdView;
     // End of variables declaration//GEN-END:variables
 }

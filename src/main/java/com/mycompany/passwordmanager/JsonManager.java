@@ -67,7 +67,7 @@ public class JsonManager implements IJsonManager{
     }
 
     @Override
-    public void WritePasswordToJSON(String accountName, String email, String password, String note, String username, MainGUI object) {
+    public void WritePasswordToJSON(String accountName, String email, String password, String note, String username, javax.swing.JFrame object) {
        String filePath = username + ".json";
 
         JSONObject newEntry = new JSONObject();

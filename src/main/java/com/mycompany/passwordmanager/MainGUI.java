@@ -1,22 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Image;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +15,15 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import table.TableActionCellEditor;
+import table.TableActionCellRender;
+import table.TableActionEvent;
 
 
 public class MainGUI extends javax.swing.JFrame {
@@ -40,12 +36,10 @@ public class MainGUI extends javax.swing.JFrame {
         initComponents();
         adjustMenuAlignment();
         
-        //non viene mostrato nella colonna delle Actions il PanelAction
         // logo application
         Image icon = new ImageIcon(this.getClass().getResource("/images/logoIcon.png")).getImage();
         this.setIconImage(icon);
 
- 
         boolean logged = username != null;
         LoginMenu.setEnabled(!logged);
         LogoutMenu.setEnabled(logged);
@@ -66,6 +60,7 @@ public class MainGUI extends javax.swing.JFrame {
             // Sostituisce la parola login con il nome dell'account loggato
             LoginMenu.setText(username);
         }
+       
     }
     
     private void adjustMenuAlignment() {
@@ -122,7 +117,7 @@ public class MainGUI extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         PasswordSearchButton = new javax.swing.JButton();
         AccountSearch = new javax.swing.JTextField();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         PasswordTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         EntryListMenu = new javax.swing.JMenu();
@@ -136,7 +131,6 @@ public class MainGUI extends javax.swing.JFrame {
         CreditsMenu = new javax.swing.JMenu();
         MyGitHub = new javax.swing.JMenuItem();
         MyFacebook = new javax.swing.JMenuItem();
-        MyLinkedin = new javax.swing.JMenuItem();
         LoginMenu = new javax.swing.JMenu();
         LogoutMenu = new javax.swing.JMenu();
 
@@ -422,40 +416,40 @@ public class MainGUI extends javax.swing.JFrame {
 
         PasswordTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "Account name", "Password", "Email", "Note", "Actions"
+                "AccountName", "Email", "Password", "Note", "Action"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false
+                false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        PasswordTable.setRowHeight(50);
-        jScrollPane3.setViewportView(PasswordTable);
+        PasswordTable.setRowHeight(40);
+        PasswordTable.setSelectionBackground(new java.awt.Color(56, 138, 112));
+        jScrollPane1.setViewportView(PasswordTable);
 
         javax.swing.GroupLayout EntryListPanelLayout = new javax.swing.GroupLayout(EntryListPanel);
         EntryListPanel.setLayout(EntryListPanelLayout);
         EntryListPanelLayout.setHorizontalGroup(
             EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EntryListPanelLayout.createSequentialGroup()
-                .addContainerGap(266, Short.MAX_VALUE)
+                .addContainerGap(268, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(81, 81, 81)
                 .addComponent(AccountSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PasswordSearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
-            .addComponent(jScrollPane3)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EntryListPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 704, Short.MAX_VALUE)
+                .addContainerGap())
         );
         EntryListPanelLayout.setVerticalGroup(
             EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -467,7 +461,7 @@ public class MainGUI extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addComponent(PasswordSearchButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -557,15 +551,6 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
         CreditsMenu.add(MyFacebook);
-
-        MyLinkedin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/linkedin.png"))); // NOI18N
-        MyLinkedin.setText("My Linkedin");
-        MyLinkedin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MyLinkedinActionPerformed(evt);
-            }
-        });
-        CreditsMenu.add(MyLinkedin);
 
         jMenuBar1.add(CreditsMenu);
 
@@ -781,24 +766,6 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_MyFacebookActionPerformed
 
-    private void MyLinkedinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyLinkedinActionPerformed
-        // URL del sito web da aprire
-        String url = "https://www.linkedin.com/in/lorenzo-bertinelli-822718310/";
-                
-        // Tentativo di aprire il sito web nel browser predefinito
-        if (Desktop.isDesktopSupported()) {
-            Desktop desktop = Desktop.getDesktop();
-            try {
-                desktop.browse(new URI(url));
-            } catch (IOException | URISyntaxException ex) {
-                    ex.printStackTrace();
-            }
-        }
-        else {
-            System.err.println("Desktop not supported. Unable to open website.");
-        }
-    }//GEN-LAST:event_MyLinkedinActionPerformed
-
     private void LoginClick(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LoginClick
         loginGUI();
     }//GEN-LAST:event_LoginClick
@@ -834,12 +801,65 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_EntrySearch
 
 
-    private void displayEntries(List<Entry> entries) {
-        Entry.PasswordTableModel passwordTableModel = new Entry.PasswordTableModel(entries);
-        PasswordTable.setModel(passwordTableModel);
-        System.out.println("enter1");
-        
+   private void displayEntries(List<Entry> entries) {
+    DefaultTableModel model = new DefaultTableModel(new Object[]{"Account Name", "Password", "Email", "Note", "Actions"}, 0);
+    PasswordTable.setModel(model);
+
+    // Inizia il ciclo da 1 per saltare la prima riga
+    for (int i = 1; i < entries.size(); i++) {
+        Entry entry = entries.get(i);
+
+        // Aggiungi righe se necessario
+        if (i - 1 >= model.getRowCount()) {
+            model.addRow(new Object[]{"", "", "", "", ""});
+        }
+
+        // Imposta i valori per ogni cella
+        model.setValueAt(entry.getAccountName(), i - 1, 0);  // Usa i - 1 per l'indice della tabella
+        model.setValueAt("•••••••••••••", i - 1, 1);         // Password nascosta
+        model.setValueAt(entry.getEmail(), i - 1, 2);
+        model.setValueAt(entry.getNote(), i - 1, 3);
+        model.setValueAt("Actions", i - 1, 4);               // Placeholder per le azioni
     }
+
+    // Configura gli eventi e il renderer della tabella
+    TableActionEvent event = new TableActionEvent() {
+        @Override
+        public void onEdit(int row) {
+            System.out.println("Edit row : " + row);
+        }
+
+        @Override
+        public void onDelete(int row) {
+            if (PasswordTable.isEditing()) {
+                PasswordTable.getCellEditor().stopCellEditing();
+            }
+            DefaultTableModel model = (DefaultTableModel) PasswordTable.getModel();
+            model.removeRow(row);
+
+            entries.remove(row);
+
+            jsonManager.saveEntriesToJson(entries, username);
+        }
+
+        @Override
+        public void onCopy(int row) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    };
+
+    // Imposta il renderer e l'editor per la colonna delle azioni
+    PasswordTable.getColumnModel().getColumn(4).setCellRenderer(new TableActionCellRender());
+    PasswordTable.getColumnModel().getColumn(4).setCellEditor(new TableActionCellEditor(event));
+    PasswordTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int i, int i1) {
+            setHorizontalAlignment(SwingConstants.RIGHT);
+            return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1);
+        }
+    });
+}
+
 
     private boolean isUserLoggedIn() {
         return username != null && !username.isEmpty();
@@ -965,7 +985,6 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JTabbedPane MainPanel;
     private javax.swing.JMenuItem MyFacebook;
     private javax.swing.JMenuItem MyGitHub;
-    private javax.swing.JMenuItem MyLinkedin;
     private javax.swing.JMenuItem NewEntryMenu;
     private javax.swing.JPanel NewEntryPanel;
     private javax.swing.JTextArea Note;
@@ -997,7 +1016,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
 }
