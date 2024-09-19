@@ -6,6 +6,7 @@ package com.mycompany.passwordmanager;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -122,44 +124,56 @@ public class JsonManager implements IJsonManager{
 
     @Override
     public List<Entry> GetEntryListFromJSON(String accountSearch, String username) {
-        String filePath = username + ".json";
-        StringBuilder jsonData = new StringBuilder();
+    String filePath = username + ".json";
+    StringBuilder jsonData = new StringBuilder();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                jsonData.append(line);
-            }
-
-            // Parsing the main JSON object
-            JSONObject jsonObject = new JSONObject(jsonData.toString());
-
-            // Extract the EntryList array
-            JSONArray entryList = jsonObject.getJSONArray("EntryList");
-            List<Entry> entries = new ArrayList<>();
-
-            // Loop through the entries in EntryList
-            for (int i = 0; i < entryList.length(); i++) {
-                JSONObject entryObject = entryList.getJSONObject(i);
-                String accountName = entryObject.optString("AccountName");
-                String password = entryObject.optString("Password");
-                String email = entryObject.optString("Email");
-                String note = entryObject.optString("Note");
-
-                Entry entry = new Entry(accountName, password, email, note);
-                
-                entries.add(entry);
-
-            }
-
-            return entries;
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            jsonData.append(line);
         }
 
-        return null;
+        // Parsing the main JSON object
+        if (jsonData.length() == 0) {
+            System.out.println("File JSON vuoto o non trovato.");
+            return new ArrayList<>();  // Restituisce una lista vuota
+        }
+
+        JSONObject jsonObject = new JSONObject(jsonData.toString());
+
+        // Extract the EntryList array
+        JSONArray entryList = jsonObject.getJSONArray("EntryList");
+        List<Entry> entries = new ArrayList<>();
+
+        // Loop through the entries in EntryList
+        for (int i = 0; i < entryList.length(); i++) {
+            JSONObject entryObject = entryList.getJSONObject(i);
+            String accountName = entryObject.optString("AccountName");
+            String password = entryObject.optString("Password");
+            String email = entryObject.optString("Email");
+            String note = entryObject.optString("Note");
+            
+            if(accountSearch == null || (accountSearch != null && accountName.contains(accountSearch))){
+                Entry entry = new Entry(accountName, password, email, note);
+                entries.add(entry);
+            }
+            
+        }
+
+        return entries;
+
+    } catch (FileNotFoundException e) {
+        System.out.println("File non trovato: " + filePath);
+        return new ArrayList<>();  // Restituisce una lista vuota se il file non esiste
+    } catch (IOException e) {
+        e.printStackTrace();
+    } catch (JSONException e) {
+        System.out.println("Errore nel parsing del JSON.");
+        e.printStackTrace();
     }
+
+    return null;
+}
 
     // Metodo per salvare le voci aggiornate nel file JSON (opzionale, se necessario)
     @Override
@@ -194,7 +208,7 @@ public class JsonManager implements IJsonManager{
 
             // Imposta i campi principali
             jsonObject.put("AccountName", account.username);  // Mantieni o aggiorna il nome dell'account principale
-            jsonObject.put("Password", jsonObject.optString("Password", account.password));  // Mantieni la password se esiste
+            jsonObject.put("Password", account.password);  // Mantieni la password dell'account
             jsonObject.put("EntryList", entryList);  // Sostituisci la EntryList con le nuove entries
 
             // Scrivi l'oggetto JSON aggiornato nel file
@@ -206,6 +220,7 @@ public class JsonManager implements IJsonManager{
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void createUserFile(String username, String password) {
@@ -278,6 +293,14 @@ public class JsonManager implements IJsonManager{
         } catch (IOException e) {
             e.printStackTrace();
         }    
+    }
+
+    List<Entry> saveEntriesToJson(Object object, String username) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    List<Entry> GetEntryListFromJSON(Account account) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

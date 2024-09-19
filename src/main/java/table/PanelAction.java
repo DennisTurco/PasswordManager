@@ -58,6 +58,7 @@ public class PanelAction extends javax.swing.JPanel {
         cmdCopy = new table.ActionButton();
 
         cmdEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/pencil.png"))); // NOI18N
+        cmdEdit.setToolTipText("Edit entry");
         cmdEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmdEditActionPerformed(evt);
@@ -65,6 +66,7 @@ public class PanelAction extends javax.swing.JPanel {
         });
 
         cmdDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/delete.png"))); // NOI18N
+        cmdDelete.setToolTipText("Delete entry");
         cmdDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmdDeleteActionPerformed(evt);
@@ -72,6 +74,7 @@ public class PanelAction extends javax.swing.JPanel {
         });
 
         cmdCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/copy.png"))); // NOI18N
+        cmdCopy.setToolTipText("Copy password");
         cmdCopy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmdCopyActionPerformed(evt);

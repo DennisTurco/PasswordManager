@@ -4,22 +4,70 @@
  */
 package com.mycompany.passwordmanager;
 
+import java.awt.Color;
+import java.awt.Image;
+import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPasswordField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
+
 
 public class EntryDeteilsGUI extends javax.swing.JFrame {
 
     private String username;
     private JsonManager jsonManager = new JsonManager();
-    
+    private boolean isPasswordVisible = false;  // Inizialmente la password è nascosta
+    private Account account;
+    private Entry entry;
+    private DefaultTableModel model;
 
-    
-    public EntryDeteilsGUI(Entry entry) {
+    public EntryDeteilsGUI(Entry entry, Account account, DefaultTableModel model) {
         initComponents();
-        
+
+        // Imposta l'icona dell'applicazione
+        Image icon = new ImageIcon(this.getClass().getResource("/images/logoIcon.png")).getImage();
+        this.setIconImage(icon);
+
+        // Imposta il comportamento della chiusura della finestra
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Chiude solo questa finestra
+
+        this.account = account;  // Inizializza il campo account con l'oggetto passato
+        this.entry = entry;
+        this.model = model;
+
+        // Aggiungi un listener per il campo Password per calcolare la forza della password
+        Password.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updatePasswordStrength();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updatePasswordStrength();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updatePasswordStrength();
+            }
+
+            private void updatePasswordStrength() {
+                CalculateSecurityPassword(Password, SecurityPassword2);
+            }
+        });
+
+        // Popola i campi con i dati dell'entry
         AccountName.setText(entry.getAccountName());
         Email.setText(entry.getEmail());
         Password.setText(entry.getPassword());
         Note.setText(entry.getNote());
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,16 +85,20 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         Note = new javax.swing.JTextArea();
-        Password = new javax.swing.JTextField();
         Email = new javax.swing.JTextField();
         AccountName = new javax.swing.JTextField();
         CancelButton = new javax.swing.JButton();
         SaveButton = new javax.swing.JButton();
+        SeePasswordButton = new javax.swing.JButton();
+        Password = new javax.swing.JPasswordField();
+        SecurityPassword2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(680, 450));
+        setResizable(false);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel6.setText("Editing area");
+        jLabel6.setText("Entry deteils");
 
         jLabel2.setText("Account name");
 
@@ -59,18 +111,6 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
         Note.setColumns(20);
         Note.setRows(5);
         jScrollPane2.setViewportView(Note);
-
-        Password.setToolTipText("To find out how secure your password is, press enter");
-        Password.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PasswordActionPerformed(evt);
-            }
-        });
-        Password.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                PasswordUpdate(evt);
-            }
-        });
 
         Email.setToolTipText("Required field");
         Email.addActionListener(new java.awt.event.ActionListener() {
@@ -102,84 +142,90 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
             }
         });
 
+        SeePasswordButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/view.png"))); // NOI18N
+        SeePasswordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SeePasswordButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(199, Short.MAX_VALUE)
+                .addContainerGap(37, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(206, 206, 206))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(104, 104, 104))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(CancelButton)
-                        .addGap(30, 30, 30)
-                        .addComponent(SaveButton)
-                        .addGap(126, 126, 126))))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(79, 79, 79)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(8, 8, 8)))
-                    .addGap(63, 63, 63)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(AccountName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(133, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(60, 60, 60)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(11, 11, 11)
+                                        .addComponent(SecurityPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(Email)
+                                    .addComponent(Password)
+                                    .addComponent(AccountName, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(37, 37, 37)
+                                .addComponent(SeePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(147, 147, 147)
+                                .addComponent(CancelButton)
+                                .addGap(35, 35, 35)
+                                .addComponent(SaveButton)))
+                        .addGap(140, 140, 140))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(179, 179, 179))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(221, 221, 221)
+                .addComponent(jLabel6)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 149, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AccountName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SaveButton)
-                    .addComponent(CancelButton))
-                .addGap(68, 68, 68))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(64, 64, 64)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(AccountName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2))
-                    .addGap(12, 12, 12)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3))
-                    .addGap(9, 9, 9)
+                    .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4))
-                    .addGap(63, 63, 63)
-                    .addComponent(jLabel5)
-                    .addContainerGap(166, Short.MAX_VALUE)))
+                    .addComponent(SeePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SecurityPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel5)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SaveButton)
+                    .addComponent(CancelButton))
+                .addGap(31, 31, 31))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
-
-    }//GEN-LAST:event_PasswordActionPerformed
-
-    private void PasswordUpdate(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PasswordUpdate
-
-    }//GEN-LAST:event_PasswordUpdate
 
     private void EmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailActionPerformed
         // TODO add your handling code here:
@@ -190,19 +236,150 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void AccountNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AccountNameActionPerformed
-        
+        // TODO add your handling code here:        
     }//GEN-LAST:event_AccountNameActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
-        
+
+        // Recupera i nuovi valori dai campi
+        String newAccountName = AccountName.getText();
+        String newEmail = Email.getText();
+        String newPassword = new String(Password.getPassword());
+        String newNote = Note.getText();
+
+        // Ottieni la lista delle entry esistenti dal file JSON
+        List<Entry> entries = jsonManager.GetEntryListFromJSON(null, account.username);
+
+        int pos = -1;
+
+        // Cerca l'entry esistente da aggiornare
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i).getAccountName().equals(entry.getAccountName()) &&
+                entries.get(i).getEmail().equals(entry.getEmail()) &&
+                entries.get(i).getNote().equals(entry.getNote()) &&
+                entries.get(i).getPassword().equals(entry.getPassword())) {
+                pos = i;
+            }
+        }
+
+        if (pos != -1) {
+            // Aggiorna i dettagli dell'entry
+            entries.get(pos).setAccountName(newAccountName);
+            entries.get(pos).setPassword(newPassword);
+            entries.get(pos).setEmail(newEmail);
+            entries.get(pos).setNote(newNote);
+
+            // Salva le entries aggiornate nel file JSON
+            jsonManager.saveEntriesToJson(entries, account);
+
+            // Aggiorna il modello della tabella
+            model.setValueAt(newAccountName, pos, 0);
+            model.setValueAt(newEmail, pos, 1);
+            model.setValueAt(newPassword, pos, 2);
+            model.setValueAt(newNote, pos, 3);
+
+            // Mostra un messaggio di conferma
+            javax.swing.JOptionPane.showMessageDialog(this, "Changes saved successfully!");
+
+            // Chiudi il frame
+            dispose();
+        } else {
+            // Mostra un messaggio di errore se l'entry non è stata trovata
+            javax.swing.JOptionPane.showMessageDialog(this, "Error: entry not found!");
+        }
+
     }//GEN-LAST:event_SaveButtonActionPerformed
 
+    private void SeePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeePasswordButtonActionPerformed
 
-    
+        if (isPasswordVisible) {
+            // Nascondi la password
+            Password.setEchoChar('•');  // Imposta il carattere '•' per nascondere la password
+            isPasswordVisible = false;
+        } else {
+            // Mostra la password
+            Password.setEchoChar((char) 0);  // Imposta il carattere nullo per mostrare la password
+            isPasswordVisible = true;
+        }
+    }//GEN-LAST:event_SeePasswordButtonActionPerformed
+
 
     private boolean isUserLoggedIn() {
         return username != null && !username.isEmpty();
     }
+    
+    private void SeePasswordButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                                   
+        if (isPasswordVisible) {
+            // Nascondi la password
+            Password.setEchoChar('•');  // Imposta il carattere '•' per nascondere la password
+            isPasswordVisible = false;
+        } else {
+            // Mostra la password
+            Password.setEchoChar((char) 0);  // Imposta il carattere nullo per mostrare la password
+            isPasswordVisible = true;
+        }
+    }                                                  
+    
+    private void CalculateSecurityPassword(JPasswordField passwordField, JLabel securityOutput) {
+        // Ottieni la password dal JPasswordField
+        String password = new String(passwordField.getPassword());
+
+        // Calcolare la forza della password
+        int strength = calculatePasswordStrength(password);
+        String strengthText = getStrengthText(strength); // Ottiene il testo descrittivo della forza
+
+        // Aggiorna la JLabel SecurityPassword2 con la forza calcolata
+        securityOutput.setText("Password Strength: " + strengthText);
+
+        // Cambia il colore della JLabel securityOutput in base alla forza della password
+        switch (strengthText) {
+            case "Very Weak":
+            case "Weak":
+                securityOutput.setForeground(Color.RED);  // Colore rosso per password debole
+                break;
+            case "Medium":
+                securityOutput.setForeground(Color.ORANGE);  // Colore arancione per password media
+                break;
+            case "Strong":
+                securityOutput.setForeground(Color.YELLOW);  // Colore giallo per password forte
+                break;
+            default:  // Password molto forte
+                securityOutput.setForeground(Color.GREEN);  // Colore verde per password molto forte
+                break;
+        }
+    }
+
+
+    private int calculatePasswordStrength(String password) {
+        int length = password.length();
+        if (length < 4) {
+            return 0; // Password molto debole
+        } else if (length < 8) {
+            return 1; // Password debole
+        } else if (length < 12) {
+            return 2; // Password media
+        }  else if (length < 16) {
+            return 3; // Password forte
+        } else {
+            return 4; // Password molto forte
+        }
+    }
+
+    private String getStrengthText(int strength) {
+        switch (strength) {
+            case 0:
+                return "Very Weak";
+            case 1:
+                return "Weak";
+            case 2:
+                return "Medium";
+            case 3:
+                return "Strong";
+            default:
+                return "Very Strong";
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -233,7 +410,8 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new EntryDeteilsGUI(null).setVisible(true);
+                Account account = new Account("username", "password"); //creazione di un esempio di account
+                new EntryDeteilsGUI(null,null,null).setVisible(true);
             }
         });
     }
@@ -243,8 +421,10 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
     private javax.swing.JButton CancelButton;
     private javax.swing.JTextField Email;
     private javax.swing.JTextArea Note;
-    private javax.swing.JTextField Password;
+    private javax.swing.JPasswordField Password;
     private javax.swing.JButton SaveButton;
+    private javax.swing.JLabel SecurityPassword2;
+    private javax.swing.JButton SeePasswordButton;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
