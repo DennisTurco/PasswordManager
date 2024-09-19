@@ -1,10 +1,10 @@
 package com.mycompany.passwordmanager;
 
 public class Entry {
-    private String accountName;
-    private String password;
-    private String email;
-    private String note;
+    private final String accountName;
+    private final String password;
+    private final String email;
+    private final String note;
 
     public Entry(String accountName, String password, String email, String note) {
         this.accountName = accountName;
@@ -33,6 +33,7 @@ public class Entry {
     public String toString() {
         return accountName + password + email + note;
     }
+<<<<<<< HEAD
     
     public void setAccountName(String accountName){
         this.accountName = accountName;
@@ -49,4 +50,6 @@ public class Entry {
     public void setNote(String note){
         this.note = note;
     }
+=======
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
 }

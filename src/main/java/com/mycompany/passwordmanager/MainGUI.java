@@ -1,13 +1,20 @@
 package com.mycompany.passwordmanager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.mycompany.passwordmanager.Entry;
+import com.mycompany.passwordmanager.JsonManager;
+import com.mycompany.passwordmanager.LoginGUI;
+import com.mycompany.passwordmanager.RegisterGUI;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Image;
+<<<<<<< HEAD
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+=======
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,6 +29,11 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+<<<<<<< HEAD
+=======
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import table.TableActionCellEditor;
@@ -44,7 +56,11 @@ public class MainGUI extends javax.swing.JFrame {
         Image icon = new ImageIcon(this.getClass().getResource("/images/logoIcon.png")).getImage();
         this.setIconImage(icon);
 
+<<<<<<< HEAD
         boolean logged = account != null;
+=======
+        boolean logged = username != null;
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
         LoginMenu.setEnabled(!logged);
         LogoutMenu.setEnabled(logged);
         LoginMenu2.setEnabled(!logged);
@@ -81,8 +97,11 @@ public class MainGUI extends javax.swing.JFrame {
             // Imposta l'icona su LoginMenu
             LoginMenu.setIcon(loginIcon);
         }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
        
     }
     
@@ -455,7 +474,11 @@ public class MainGUI extends javax.swing.JFrame {
 
             },
             new String [] {
+<<<<<<< HEAD
                 "Account Name", "Email", "Password", "Note", "Action"
+=======
+                "AccountName", "Email", "Password", "Note", "Action"
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -475,14 +498,26 @@ public class MainGUI extends javax.swing.JFrame {
         EntryListPanelLayout.setHorizontalGroup(
             EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EntryListPanelLayout.createSequentialGroup()
+<<<<<<< HEAD
                 .addContainerGap()
+=======
+                .addContainerGap(268, Short.MAX_VALUE)
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
                 .addComponent(jLabel1)
                 .addGap(115, 115, 115)
                 .addComponent(AccountSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PasswordSearchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+<<<<<<< HEAD
                 .addContainerGap())
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 716, Short.MAX_VALUE)
+=======
+                .addGap(61, 61, 61))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EntryListPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 704, Short.MAX_VALUE)
+                .addContainerGap())
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
         );
         EntryListPanelLayout.setVerticalGroup(
             EntryListPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -494,7 +529,12 @@ public class MainGUI extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addComponent(PasswordSearchButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+<<<<<<< HEAD
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE))
+=======
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addContainerGap())
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
         );
 
         MainPanel.addTab("Entry list", EntryListPanel);
@@ -833,6 +873,7 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_PasswordUpdate
 
+<<<<<<< HEAD
     private void PasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordActionPerformed
 
         if(Password.getText().isEmpty()){
@@ -858,10 +899,21 @@ public class MainGUI extends javax.swing.JFrame {
             Entry entry = entries.get(i);
 
             // Aggiungi righe se necessario
+=======
+    private void displayEntries(List<Entry> entries) {
+        DefaultTableModel model = new DefaultTableModel(new Object[]{"Account Name", "Password", "Email", "Note", "Actions"}, 0);
+        PasswordTable.setModel(model);
+
+        for (int i = 0; i < entries.size(); i++) {
+            Entry entry = entries.get(i);
+
+            // Add rows if necessary
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
             if (i >= model.getRowCount()) {
                 model.addRow(new Object[]{"", "", "", "", ""});
             }
 
+<<<<<<< HEAD
             // Imposta i valori per ogni cella
             model.setValueAt(entry.getAccountName(), i, 0);  // Usa i per l'indice della tabella
             model.setValueAt("•••••••••••••", i, 1);         // Password nascosta
@@ -885,6 +937,20 @@ public class MainGUI extends javax.swing.JFrame {
             public void onEdit(int row) {
                 EntryDeteilsGUI entryDeteilsFrame = new EntryDeteilsGUI(entries.get(row), account, model);
                 entryDeteilsFrame.setVisible(true);
+=======
+            // Set values for each cell
+            model.setValueAt(entry.getAccountName(), i, 0);
+            model.setValueAt(entry.getPassword(), i, 1);
+            model.setValueAt(entry.getEmail(), i, 2);
+            model.setValueAt(entry.getNote(), i, 3);
+            model.setValueAt("Actions", i, 4); // Placeholder for actions
+        }
+        
+        TableActionEvent event = new TableActionEvent() {
+            @Override
+            public void onEdit(int row) {
+                System.out.println("Edit row : " + row);
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
             }
 
             @Override
@@ -892,6 +958,7 @@ public class MainGUI extends javax.swing.JFrame {
                 if (PasswordTable.isEditing()) {
                     PasswordTable.getCellEditor().stopCellEditing();
                 }
+<<<<<<< HEAD
                 int response = JOptionPane.showOptionDialog(null, "Are you sure to delete this entry?", "Confirmation request", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
                 if (response == JOptionPane.OK_OPTION) {
                     DefaultTableModel model = (DefaultTableModel) PasswordTable.getModel();
@@ -914,6 +981,26 @@ public class MainGUI extends javax.swing.JFrame {
         // Imposta il renderer e l'editor per la colonna delle azioni
         PasswordTable.getColumnModel().getColumn(4).setCellRenderer(new TableActionCellRender());
         PasswordTable.getColumnModel().getColumn(4).setCellEditor(new TableActionCellEditor(event));
+=======
+                DefaultTableModel model = (DefaultTableModel) PasswordTable.getModel();
+                model.removeRow(row);
+            }
+
+            @Override
+            public void onView(int row) {
+                System.out.println("View row : " + row);
+            }
+        };
+        PasswordTable.getColumnModel().getColumn(4).setCellRenderer(new TableActionCellRender());
+        PasswordTable.getColumnModel().getColumn(4).setCellEditor(new TableActionCellEditor(event));
+        PasswordTable.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable jtable, Object o, boolean bln, boolean bln1, int i, int i1) {
+                setHorizontalAlignment(SwingConstants.RIGHT);
+                return super.getTableCellRendererComponent(jtable, o, bln, bln1, i, i1);
+            }
+        });
+>>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
     }
 
 
