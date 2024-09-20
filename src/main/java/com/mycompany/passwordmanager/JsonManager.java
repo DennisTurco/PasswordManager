@@ -56,6 +56,7 @@ public class JsonManager implements IJsonManager{
         return false;
     }
 
+
     @Override
     public void saveLoginState(String username) {
         JSONObject loginState = new JSONObject();
@@ -123,57 +124,68 @@ public class JsonManager implements IJsonManager{
     }
 
     @Override
-    public List<Entry> GetEntryListFromJSON(String accountSearch, String username) {
-    String filePath = username + ".json";
-    StringBuilder jsonData = new StringBuilder();
+   public List<Entry> GetEntryListFromJSON(String accountSearch, String entryToDelete, Account account) {
+        String filePath = account.username + ".json";
+        StringBuilder jsonData = new StringBuilder();
 
-    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        while ((line = br.readLine()) != null) {
-            jsonData.append(line);
-        }
-
-        // Parsing the main JSON object
-        if (jsonData.length() == 0) {
-            System.out.println("File JSON vuoto o non trovato.");
-            return new ArrayList<>();  // Restituisce una lista vuota
-        }
-
-        JSONObject jsonObject = new JSONObject(jsonData.toString());
-
-        // Extract the EntryList array
-        JSONArray entryList = jsonObject.getJSONArray("EntryList");
-        List<Entry> entries = new ArrayList<>();
-
-        // Loop through the entries in EntryList
-        for (int i = 0; i < entryList.length(); i++) {
-            JSONObject entryObject = entryList.getJSONObject(i);
-            String accountName = entryObject.optString("AccountName");
-            String password = entryObject.optString("Password");
-            String email = entryObject.optString("Email");
-            String note = entryObject.optString("Note");
-            
-            if(accountSearch == null || (accountSearch != null && accountName.contains(accountSearch))){
-                Entry entry = new Entry(accountName, password, email, note);
-                entries.add(entry);
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonData.append(line);
             }
-            
+
+            // Parsing the main JSON object
+            if (jsonData.length() == 0) {
+                System.out.println("File JSON vuoto o non trovato.");
+                return new ArrayList<>();  // Restituisce una lista vuota
+            }
+
+            JSONObject jsonObject = new JSONObject(jsonData.toString());
+
+            // Extract the EntryList array
+            JSONArray entryList = jsonObject.getJSONArray("EntryList");
+            List<Entry> entries = new ArrayList<>();
+
+            // Loop through the entries in EntryList
+            for (int i = 0; i < entryList.length(); i++) {
+                JSONObject entryObject = entryList.getJSONObject(i);
+                String accountName = entryObject.optString("AccountName");
+                String password = entryObject.optString("Password");
+                String email = entryObject.optString("Email");
+                String note = entryObject.optString("Note");
+
+                // Check if the account matches the search criteria
+                if (accountSearch == null || accountName.contains(accountSearch)) {
+                    Entry entry = new Entry(accountName, password, email, note);
+                    entries.add(entry);
+                }
+            }
+
+            // If you want to display the entries found for the specific account
+            if (!entries.isEmpty()) {
+                System.out.println("Entries found for account: " + accountSearch);
+                for (Entry entry : entries) {
+                    System.out.println(entry); // Supponendo che Entry abbia un metodo toString() ben definito
+                }
+            } else {
+                System.out.println("Nessun account trovato per: " + accountSearch);
+            }
+
+            return entries;
+
+        } catch (FileNotFoundException e) {
+            System.out.println("File non trovato: " + filePath);
+            return new ArrayList<>();  // Restituisce una lista vuota se il file non esiste
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            System.out.println("Errore nel parsing del JSON.");
+            e.printStackTrace();
         }
 
-        return entries;
-
-    } catch (FileNotFoundException e) {
-        System.out.println("File non trovato: " + filePath);
-        return new ArrayList<>();  // Restituisce una lista vuota se il file non esiste
-    } catch (IOException e) {
-        e.printStackTrace();
-    } catch (JSONException e) {
-        System.out.println("Errore nel parsing del JSON.");
-        e.printStackTrace();
+        return null;
     }
 
-    return null;
-}
 
     // Metodo per salvare le voci aggiornate nel file JSON (opzionale, se necessario)
     @Override
@@ -295,12 +307,5 @@ public class JsonManager implements IJsonManager{
         }    
     }
 
-    List<Entry> saveEntriesToJson(Object object, String username) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    List<Entry> GetEntryListFromJSON(Account account) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
 }

@@ -1,10 +1,10 @@
 package com.mycompany.passwordmanager;
 
 public class Entry {
-    private final String accountName;
-    private final String password;
-    private final String email;
-    private final String note;
+    private String accountName;
+    private String password;
+    private String email;
+    private String note;
 
     public Entry(String accountName, String password, String email, String note) {
         this.accountName = accountName;
@@ -29,27 +29,24 @@ public class Entry {
         return note;
     }
 
+    public void setAccountName(String newAccountName) {
+        this.accountName = newAccountName;
+    }
+
+    public void setPassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+    public void setEmail(String newEmail) {
+        this.email = newEmail;
+    }
+
+    public void setNote(String newNote) {
+        this.note = newNote;
+    }
+
     @Override
     public String toString() {
         return accountName + password + email + note;
     }
-<<<<<<< HEAD
-    
-    public void setAccountName(String accountName){
-        this.accountName = accountName;
-    }
-    
-    public void setPassword(String password){
-        this.password = password;
-    }
-    
-    public void setEmail(String email){
-        this.email = email;
-    }
-    
-    public void setNote(String note){
-        this.note = note;
-    }
-=======
->>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
 }

@@ -185,14 +185,8 @@ public class LoginGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Incorrect username or password", "Failure", JOptionPane.ERROR_MESSAGE);
             return;
         }
-<<<<<<< HEAD
-        
         Account account = new Account (accountName, password );
-        MainGUI mainFrame = new MainGUI(account);
-=======
-
-        MainGUI mainFrame = new MainGUI(accountName);  
->>>>>>> 3cc54cb3f622e2904052f1261f37e4a0f12e4998
+        MainGUI mainFrame = new MainGUI(account);  
         mainFrame.setVisible(true);
 
         dispose();  // Chiude il frame corrente

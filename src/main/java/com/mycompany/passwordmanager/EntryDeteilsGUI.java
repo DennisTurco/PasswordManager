@@ -248,7 +248,7 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
         String newNote = Note.getText();
 
         // Ottieni la lista delle entry esistenti dal file JSON
-        List<Entry> entries = jsonManager.GetEntryListFromJSON(null, account.username);
+        List<Entry> entries = jsonManager.GetEntryListFromJSON(null, null, account);
 
         int pos = -1;
 
