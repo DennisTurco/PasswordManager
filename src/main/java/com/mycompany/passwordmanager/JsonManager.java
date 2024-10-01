@@ -4,16 +4,20 @@
  */
 package com.mycompany.passwordmanager;
 
-import java.io.BufferedReader;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,37 +28,55 @@ import org.json.JSONObject;
  * @author Lorenzo
  */
 public class JsonManager implements IJsonManager{
+    
+    private final String ACCOUNT_FILE = "src/main/resources/saves/accounts.json"; 
+    private final String ACCOUNT_DIRECTORY = "src/main/resources/saves/"; 
+    private final String AES_STRING = "uQHTkQbIqnHExgfw+wDofg==";
+    private final SecretKey secretKey;
+    
+    public JsonManager(){        
+        byte[] decodedKey = Base64.getDecoder().decode(AES_STRING);      
+        secretKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+    }
+    
+
 
     @Override
     public boolean ReadAccoutToJSON(String username, String password) {
-        String filePath = "accounts.json";
+        String filePath = ACCOUNT_FILE;
         StringBuilder jsonData = new StringBuilder();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                jsonData.append(line);
-            }
+        try {
 
-            // Parsing the JSON array
-            JSONArray jsonArray = new JSONArray(jsonData.toString());
+            // Leggi il contenuto del file JSON senza tentare di decifrare l'intero file
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            JSONArray jsonArray = new JSONArray(content);
 
-            // Iterate through the array and get the values
+            // Itera attraverso l'array e confronta username e password
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String accountName = jsonObject.getString("username");
-                String accountPassword = jsonObject.getString("Password");
-                
-                if(username.equals(accountName) && password.equals(accountPassword)){
-                    return true;
+
+                // Decodifica i campi cifrati da Base64
+                byte[] encodedUsername = Base64.getDecoder().decode(jsonObject.getString("username"));
+                byte[] encodedPassword = Base64.getDecoder().decode(jsonObject.getString("Password"));
+
+                // Decifra username e password
+                String decryptedUsername = new String(EncryptionUtil.decryptData(encodedUsername, secretKey));
+                String decryptedPassword = new String(EncryptionUtil.decryptData(encodedPassword, secretKey));
+
+                // Confronta i dati decifrati con quelli inseriti dall'utente
+                if (username.equals(decryptedUsername) && password.equals(decryptedPassword)) {
+                    return true; // Accesso corretto
                 }
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
         }
         return false;
     }
+
 
 
     @Override
@@ -62,127 +84,127 @@ public class JsonManager implements IJsonManager{
         JSONObject loginState = new JSONObject();
         loginState.put("username", username);
 
-        try (FileWriter fileWriter = new FileWriter("loginState.json")) {
+        try (FileWriter fileWriter = new FileWriter(ACCOUNT_DIRECTORY+"loginState.json")) {
             fileWriter.write(loginState.toString(4));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
         }
     }
 
     @Override
     public void WritePasswordToJSON(String accountName, String email, String password, String note, String username, javax.swing.JFrame object) {
-       String filePath = username + ".json";
+       String filePath = ACCOUNT_DIRECTORY + username + ".json";
 
-        JSONObject newEntry = new JSONObject();
-        newEntry.put("AccountName", accountName);
-        newEntry.put("Email", email);
-        newEntry.put("Password", password);
-        newEntry.put("Note", note);
+       try {
+           
 
-        try {
-            File file = new File(filePath);
-            JSONObject jsonObject;
+           // Crea un nuovo oggetto JSON per la nuova entry
+           JSONObject newEntry = new JSONObject();
 
-            if (file.exists()) {
-                String content = new String(Files.readAllBytes(Paths.get(filePath)));
-                if (content.isEmpty()) {
-                    // Crea un nuovo oggetto JSON se il file è vuoto
-                    jsonObject = new JSONObject();
-                    jsonObject.put("AccountName", username);  // Imposta il nome dell'account principale
-                    jsonObject.put("Password", password);           // Puoi modificare o settare la password se necessario
-                    jsonObject.put("EntryList", new JSONArray()); // Crea un array vuoto di EntryList
-                } else {
-                    // Leggi l'oggetto JSON esistente
-                    jsonObject = new JSONObject(content);
-                }
-            } else {
-                // Crea un nuovo oggetto JSON se il file non esiste
-                jsonObject = new JSONObject();
-                jsonObject.put("AccountName", username);
-                jsonObject.put("Password",password);
-                jsonObject.put("EntryList", new JSONArray());
-            }
+           // Cifra i campi sensibili (AccountName, Email, Password e Note)
+           byte[] encryptedAccountName = EncryptionUtil.encryptData(accountName.getBytes(), secretKey);
+           byte[] encryptedPassword = EncryptionUtil.encryptData(password.getBytes(), secretKey);
+           byte[] encryptedEmail = EncryptionUtil.encryptData(email.getBytes(), secretKey);
+           byte[] encryptedNote = EncryptionUtil.encryptData(note.getBytes(), secretKey);
 
-            // Ottieni l'array EntryList esistente e aggiungi il nuovo entry
-            JSONArray entryList = jsonObject.getJSONArray("EntryList");
-            entryList.put(newEntry);
+           // Codifica in Base64 per renderli leggibili come stringhe nel JSON
+           String encryptedAccountNameBase64 = Base64.getEncoder().encodeToString(encryptedAccountName);
+           String encryptedPasswordBase64 = Base64.getEncoder().encodeToString(encryptedPassword);
+           String encryptedEmailBase64 = Base64.getEncoder().encodeToString(encryptedEmail);
+           String encryptedNoteBase64 = Base64.getEncoder().encodeToString(encryptedNote);
 
-            // Scrivi il file aggiornato
-            try (FileWriter fileWriter = new FileWriter(filePath)) {
-                fileWriter.write(jsonObject.toString(4));  // Formatta con indentazione
-            }
+           // Aggiungi i dati cifrati all'oggetto JSON della nuova entry
+           newEntry.put("AccountName", encryptedAccountNameBase64);
+           newEntry.put("Email", encryptedEmailBase64);
+           newEntry.put("Password", encryptedPasswordBase64);
+           newEntry.put("Note", encryptedNoteBase64);
 
-            // Controlla i campi obbligatori
-            if (accountName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(object, "Enter the text in the required fields", "Failure", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+           File file = new File(filePath);
+           JSONObject jsonObject;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+           if (file.exists()) {
+               // Leggi il contenuto del file
+               String content = new String(Files.readAllBytes(Paths.get(filePath)));
+
+               if (content.isEmpty()) {
+                   // Se il file è vuoto, crea un nuovo oggetto JSON con un array vuoto in "EntryList"
+                   jsonObject = new JSONObject();
+                   jsonObject.put("EntryList", new JSONArray());
+               } else {
+                   // Se il file ha del contenuto, carica il contenuto esistente come oggetto JSON
+                   jsonObject = new JSONObject(content);
+               }
+           } else {
+               // Se il file non esiste, crea un nuovo oggetto JSON con un array vuoto in "EntryList"
+               jsonObject = new JSONObject();
+               jsonObject.put("EntryList", new JSONArray());
+           }
+
+           // Aggiungi la nuova entry all'array "EntryList"
+           jsonObject.getJSONArray("EntryList").put(newEntry);
+
+           // Scrivi il file JSON aggiornato
+           try (FileWriter fileWriter = new FileWriter(filePath)) {
+               fileWriter.write(jsonObject.toString(4));  // Il parametro 4 è per l'indentazione del JSON
+           }
+
+           // Verifica se i campi obbligatori sono vuoti e mostra un messaggio di errore
+           if (accountName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+               JOptionPane.showMessageDialog(object, "Enter the text in the required fields", "Failure", JOptionPane.ERROR_MESSAGE);
+               return;
+           }
+
+       } catch (Exception e) {
+           e.printStackTrace();
+           MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
+       }
+   }
+
 
     @Override
-   public List<Entry> GetEntryListFromJSON(String accountSearch, String entryToDelete, Account account) {
-        String filePath = account.username + ".json";
-        StringBuilder jsonData = new StringBuilder();
+    public List<Entry> GetEntryListFromJSON(String accountSearch, String entryToDelete, Account account) {
+        String filePath = ACCOUNT_DIRECTORY + account.username + ".json";
+        List<Entry> entries = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                jsonData.append(line);
-            }
+        try {
+           
+            // Leggi il contenuto del file JSON senza tentare di decifrare l'intero file
+            String content = new String(Files.readAllBytes(Paths.get(filePath)));
+            JSONObject jsonObject = new JSONObject(content);
 
-            // Parsing the main JSON object
-            if (jsonData.length() == 0) {
-                System.out.println("File JSON vuoto o non trovato.");
-                return new ArrayList<>();  // Restituisce una lista vuota
-            }
-
-            JSONObject jsonObject = new JSONObject(jsonData.toString());
-
-            // Extract the EntryList array
+            // Ottieni l'array "EntryList" dal JSON
             JSONArray entryList = jsonObject.getJSONArray("EntryList");
-            List<Entry> entries = new ArrayList<>();
 
-            // Loop through the entries in EntryList
+            // Itera attraverso le entry nell'array "EntryList"
             for (int i = 0; i < entryList.length(); i++) {
                 JSONObject entryObject = entryList.getJSONObject(i);
-                String accountName = entryObject.optString("AccountName");
-                String password = entryObject.optString("Password");
-                String email = entryObject.optString("Email");
-                String note = entryObject.optString("Note");
 
-                // Check if the account matches the search criteria
-                if (accountSearch == null || accountName.contains(accountSearch)) {
-                    Entry entry = new Entry(accountName, password, email, note);
+                // Decodifica i campi cifrati in Base64
+                byte[] encodedAccountName = Base64.getDecoder().decode(entryObject.getString("AccountName"));
+                byte[] encodedPassword = Base64.getDecoder().decode(entryObject.getString("Password"));
+                byte[] encodedEmail = Base64.getDecoder().decode(entryObject.getString("Email"));
+                byte[] encodedNote = Base64.getDecoder().decode(entryObject.getString("Note"));
+
+                // Decifra i campi usando la chiave segreta
+                String decryptedAccountName = new String(EncryptionUtil.decryptData(encodedAccountName, secretKey));
+                String decryptedPassword = new String(EncryptionUtil.decryptData(encodedPassword, secretKey));
+                String decryptedEmail = new String(EncryptionUtil.decryptData(encodedEmail, secretKey));
+                String decryptedNote = new String(EncryptionUtil.decryptData(encodedNote, secretKey));
+
+                // Filtra per ricerca (se fornito) e aggiungi l'entry alla lista
+                if (accountSearch == null || decryptedAccountName.contains(accountSearch)) {
+                    Entry entry = new Entry(decryptedAccountName, decryptedPassword, decryptedEmail, decryptedNote);
                     entries.add(entry);
                 }
             }
 
-            // If you want to display the entries found for the specific account
-            if (!entries.isEmpty()) {
-                System.out.println("Entries found for account: " + accountSearch);
-                for (Entry entry : entries) {
-                    System.out.println(entry); // Supponendo che Entry abbia un metodo toString() ben definito
-                }
-            } else {
-                System.out.println("Nessun account trovato per: " + accountSearch);
-            }
-
             return entries;
 
-        } catch (FileNotFoundException e) {
-            System.out.println("File non trovato: " + filePath);
-            return new ArrayList<>();  // Restituisce una lista vuota se il file non esiste
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (JSONException e) {
-            System.out.println("Errore nel parsing del JSON.");
-            e.printStackTrace();
+            MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
         }
-
         return null;
     }
 
@@ -190,23 +212,40 @@ public class JsonManager implements IJsonManager{
     // Metodo per salvare le voci aggiornate nel file JSON (opzionale, se necessario)
     @Override
     public void saveEntriesToJson(List<Entry> entries, Account account) {
-        String filePath = account.username + ".json";
+        String filePath = ACCOUNT_DIRECTORY + account.username + ".json";
         JSONObject jsonObject = new JSONObject();
 
-        // Creare un JSONArray per EntryList
-        JSONArray entryList = new JSONArray();
-
-        // Popolare l'array con le entries passate alla funzione
-        for (Entry entry : entries) {
-            JSONObject entryObject = new JSONObject();
-            entryObject.put("AccountName", entry.getAccountName());
-            entryObject.put("Password", entry.getPassword());
-            entryObject.put("Email", entry.getEmail());
-            entryObject.put("Note", entry.getNote());
-            entryList.put(entryObject);
-        }
-
         try {
+            
+            
+            // Creare un JSONArray per EntryList
+            JSONArray entryList = new JSONArray();
+
+
+
+            // Popolare l'array con le entries passate alla funzione
+            for (Entry entry : entries) {
+                JSONObject entryObject = new JSONObject();
+
+                 // Cifra i campi sensibili (AccountName, Email, Password e Note)
+               byte[] encryptedAccountName = EncryptionUtil.encryptData(entry.getAccountName().getBytes(), secretKey);
+               byte[] encryptedPassword = EncryptionUtil.encryptData(entry.getPassword().getBytes(), secretKey);
+               byte[] encryptedEmail = EncryptionUtil.encryptData(entry.getEmail().getBytes(), secretKey);
+               byte[] encryptedNote = EncryptionUtil.encryptData(entry.getNote().getBytes(), secretKey);
+
+               // Codifica in Base64 per renderli leggibili come stringhe nel JSON
+               String encryptedAccountNameBase64 = Base64.getEncoder().encodeToString(encryptedAccountName);
+               String encryptedPasswordBase64 = Base64.getEncoder().encodeToString(encryptedPassword);
+               String encryptedEmailBase64 = Base64.getEncoder().encodeToString(encryptedEmail);
+               String encryptedNoteBase64 = Base64.getEncoder().encodeToString(encryptedNote);
+
+                entryObject.put("AccountName", encryptedAccountNameBase64);
+                entryObject.put("Password", encryptedPasswordBase64);
+                entryObject.put("Email", encryptedEmailBase64);
+                entryObject.put("Note", encryptedNoteBase64);
+                entryList.put(entryObject);
+            }
+            
             File file = new File(filePath);
 
             if (file.exists()) {
@@ -217,10 +256,17 @@ public class JsonManager implements IJsonManager{
                     jsonObject = new JSONObject(content);
                 }
             }
+            
+            byte[] encryptedAccount = EncryptionUtil.encryptData(account.username.getBytes(), secretKey);
+            byte[] encryptedPassword = EncryptionUtil.encryptData(account.password.getBytes(), secretKey);
+
+            String encryptedAccountBase64 = Base64.getEncoder().encodeToString(encryptedAccount);
+            String encryptedPasswordBase64 = Base64.getEncoder().encodeToString(encryptedPassword);
+
 
             // Imposta i campi principali
-            jsonObject.put("AccountName", account.username);  // Mantieni o aggiorna il nome dell'account principale
-            jsonObject.put("Password", account.password);  // Mantieni la password dell'account
+            jsonObject.put("AccountName", encryptedAccountBase64);  // Mantieni o aggiorna il nome dell'account principale
+            jsonObject.put("Password", encryptedPasswordBase64);  // Mantieni la password dell'account
             jsonObject.put("EntryList", entryList);  // Sostituisci la EntryList con le nuove entries
 
             // Scrivi l'oggetto JSON aggiornato nel file
@@ -228,84 +274,145 @@ public class JsonManager implements IJsonManager{
                 fileWriter.write(jsonObject.toString(4)); // Formatta il JSON con 4 spazi
             }
 
-        } catch (IOException e) {
+        } 
+        
+        
+        catch (Exception e) {
             e.printStackTrace();
+            MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
         }
     }
 
 
     @Override
     public void createUserFile(String username, String password) {
-        // Crea un nuovo oggetto JSON con le informazioni da aggiungere
-        JSONObject newEntry = new JSONObject();
-        newEntry.put("AccountName", username);
-        newEntry.put("Password", password);
+        System.out.println("createUserFile");
+        try {
+           
+            // Cifra il nome utente e la password
+            byte[] encryptedUsername = EncryptionUtil.encryptData(username.getBytes(), secretKey);
+            byte[] encryptedPassword = EncryptionUtil.encryptData(password.getBytes(), secretKey);
 
-        // Crea un array JSON e aggiungi l'oggetto utente
-        JSONArray userArray = new JSONArray();
-        userArray.put(newEntry);
+            // Codifica in Base64 per renderli leggibili come stringhe nel JSON
+            String encryptedUsernameBase64 = Base64.getEncoder().encodeToString(encryptedUsername);
+            String encryptedPasswordBase64 = Base64.getEncoder().encodeToString(encryptedPassword);
 
-        // Determina il percorso del file usando il nome dell'account
-        String filePath = username + ".json";
+            // Crea un oggetto JSON con le informazioni cifrate e il campo EntryList vuoto
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("AccountName", encryptedUsernameBase64);
+            jsonObject.put("Password", encryptedPasswordBase64);
+            jsonObject.put("EntryList", new JSONArray());  // EntryList vuoto
 
-        try (FileWriter fileWriter = new FileWriter(filePath)) {
-            // Scrivi il JSONArray nel file
-            fileWriter.write(userArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
-            System.out.println("Informazioni aggiunte con successo.");
-        } catch (IOException e) {
+            // Determina il percorso del file usando il nome dell'account
+            String filePath = ACCOUNT_DIRECTORY + username + ".json";
+
+            try (FileWriter fileWriter = new FileWriter(filePath)) {
+                // Scrivi l'oggetto JSON nel file
+                fileWriter.write(jsonObject.toString(4)); // Il parametro 4 è per l'indentazione del JSON
+                System.out.println("Informazioni aggiunte con successo.");
+            } catch (Exception e) {
+                e.printStackTrace();
+                MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-        }    
+            MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
+        }
     }
 
-    @Override
+
+  @Override
     public void addUserToCentralFile(String username, String password) {
-        String centralFilePath = "accounts.json";
+        String centralFilePath = ACCOUNT_FILE;
+        //String secretKeyPath = ACCOUNT_DIRECTORY + username + "_key.aes";
         JSONArray accountsArray;
 
-        // Leggi il file JSON centrale, se esiste
         try {
-            String content = new String(Files.readAllBytes(Paths.get(centralFilePath)));
-            accountsArray = new JSONArray(content);
+           
+            // Verifica se il file centrale esiste, altrimenti crea un nuovo JSONArray
+            if (!Files.exists(Paths.get(centralFilePath))) {
+               System.out.println("Il file centrale non esiste. Creazione di un nuovo file...");
+               accountsArray = new JSONArray(); // Crea un nuovo array se il file non esiste
+            } else {
+               // Leggi il file JSON centrale, se esiste
+               String content = new String(Files.readAllBytes(Paths.get(centralFilePath)));
+
+               // Verifica che il contenuto non sia vuoto e che inizi con '['
+               if (content.trim().isEmpty() || !content.trim().startsWith("[")) {
+                   accountsArray = new JSONArray(); // Crea un nuovo array se il file è vuoto o non valido
+               } else {
+                   accountsArray = new JSONArray(content); // Continua se il file contiene un array valido
+               }
+            }
+            
+            // Cifra il username e la password
+            byte[] encryptedUsername = EncryptionUtil.encryptData(username.getBytes(), secretKey);
+            byte[] encryptedPassword = EncryptionUtil.encryptData(password.getBytes(), secretKey);
+
+            // Codifica i dati cifrati in Base64 per memorizzarli nel JSON
+            String encryptedUsernameBase64 = Base64.getEncoder().encodeToString(encryptedUsername);
+            String encryptedPasswordBase64 = Base64.getEncoder().encodeToString(encryptedPassword);
+
+            // Crea un nuovo oggetto JSON per l'utente cifrato
+            JSONObject newUser = new JSONObject();
+            newUser.put("username", encryptedUsernameBase64);
+            newUser.put("Password", encryptedPasswordBase64);
+
+            // Aggiungi l'utente all'array
+            accountsArray.put(newUser);
+
+            // Scrivi l'array aggiornato nel file
+            try (FileWriter fileWriter = new FileWriter(centralFilePath)) {
+                fileWriter.write(accountsArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
+                System.out.println("Utente aggiunto al file centrale con successo.");
+            }
+
         } catch (IOException e) {
-            accountsArray = new JSONArray(); // Crea un nuovo array se il file non esiste
-        }
-
-        // Crea un nuovo oggetto JSON per l'utente
-        JSONObject newUser = new JSONObject();
-        newUser.put("username", username);
-        newUser.put("Password", password);
-
-        // Aggiungi l'utente all'array
-        accountsArray.put(newUser);
-
-        // Scrivi l'array aggiornato nel file
-        try (FileWriter fileWriter = new FileWriter(centralFilePath)) {
-            fileWriter.write(accountsArray.toString(4)); // Il parametro 4 è per l'indentazione del JSON
-            System.out.println("Utente aggiunto al file centrale con successo.");
-        } catch (IOException e) {
+            // Se il file non esiste o non può essere letto, inizializza un array vuoto
+            accountsArray = new JSONArray();
+        } catch (JSONException e) {
+            MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
+            return;
+        } catch (Exception e) {
             e.printStackTrace();
-        }    
+            MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
+            return;
+        }
     }
+
 
     @Override
     public void WriteAccountToJSON(String username, String password) {
-        // Crea un nuovo oggetto JSON con le informazioni da aggiungere
-        JSONObject newEntry = new JSONObject();
-        newEntry.put("AccountName", username);
-        newEntry.put("Password", password);
+        System.out.println("WriteAccountToJSON");
+        try {
+           
+            // Cifra il nome utente e la password
+            byte[] encryptedUsername = EncryptionUtil.encryptData(username.getBytes(), secretKey);
+            byte[] encryptedPassword = EncryptionUtil.encryptData(password.getBytes(), secretKey);
 
-        // Determina il percorso del file usando il nome dell'account
-        String filePath = username + ".json";
-        
+            // Codifica in Base64 per renderli leggibili come stringhe nel JSON
+            String encryptedUsernameBase64 = Base64.getEncoder().encodeToString(encryptedUsername);
+            String encryptedPasswordBase64 = Base64.getEncoder().encodeToString(encryptedPassword);
 
-        try (FileWriter fileWriter = new FileWriter(filePath)) {
-            // Scrivi il JSONObject nel file
-            fileWriter.write(newEntry.toString(4)); // Il parametro 4 è per l'indentazione del JSON
-            System.out.println("Informazioni aggiunte con successo.");
-        } catch (IOException e) {
+            // Crea un nuovo oggetto JSON con le informazioni cifrate
+            JSONObject newEntry = new JSONObject();
+            newEntry.put("AccountName", encryptedUsernameBase64);
+            newEntry.put("Password", encryptedPasswordBase64);
+
+            // Determina il percorso del file usando il nome dell'account
+            String filePath = ACCOUNT_DIRECTORY + username + ".json";
+
+            try (FileWriter fileWriter = new FileWriter(filePath)) {
+                // Scrivi il JSONObject nel file
+                fileWriter.write(newEntry.toString(4)); // Il parametro 4 è per l'indentazione del JSON
+                System.out.println("Informazioni aggiunte con successo.");
+            } catch (Exception e) {
+                e.printStackTrace();
+                MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-        }    
-    }
-
-    
+            MainGUI.OpenExceptionMessage(e.getMessage(), Arrays.toString(e.getStackTrace()));
+        }
+    }  
 }

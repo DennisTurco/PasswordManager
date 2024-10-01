@@ -76,7 +76,7 @@ public class LoginGUI extends javax.swing.JFrame {
             }
         });
 
-        RegisterButton.setBackground(new java.awt.Color(255, 255, 255));
+        RegisterButton.setBackground(new java.awt.Color(153, 153, 153));
         RegisterButton.setForeground(new java.awt.Color(0, 0, 0));
         RegisterButton.setText("Create account");
         RegisterButton.addActionListener(new java.awt.event.ActionListener() {
@@ -85,7 +85,7 @@ public class LoginGUI extends javax.swing.JFrame {
             }
         });
 
-        NoLoginButton.setBackground(new java.awt.Color(255, 255, 255));
+        NoLoginButton.setBackground(new java.awt.Color(153, 153, 153));
         NoLoginButton.setForeground(new java.awt.Color(0, 0, 0));
         NoLoginButton.setText("Continue without register");
         NoLoginButton.addActionListener(new java.awt.event.ActionListener() {

@@ -98,7 +98,7 @@ public class EntryDeteilsGUI extends javax.swing.JFrame {
         setResizable(false);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel6.setText("Entry deteils");
+        jLabel6.setText("Entry details");
 
         jLabel2.setText("Account name");
 

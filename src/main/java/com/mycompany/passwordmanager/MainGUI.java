@@ -91,6 +91,59 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
     
+    public static void OpenExceptionMessage(String errorMessage, String stackTrace) {
+        Object[] options = {"Close", "Copy to clipboard", "Report the Problem"};
+
+        if (errorMessage == null ) {
+            errorMessage = "\n\n";
+        }
+        stackTrace = errorMessage + stackTrace;
+        String stackTraceMessage = "Please report this error, either with an image of the screen or by copying the following error text (it is appreciable to provide a description of the operations performed before the error): \n" +  stackTrace;
+
+        int choice;
+
+        // Keep displaying the dialog until the "Close" option (index 0) is chosen
+        do {
+            
+            System.out.println(stackTraceMessage.length());
+            
+            if (stackTraceMessage.length() > 1500) {
+                stackTraceMessage = stackTraceMessage.substring(0, 1500) + "...";     
+            }
+                                
+            // Display the option dialog
+            choice = JOptionPane.showOptionDialog(
+                null,
+                stackTraceMessage,                   // The detailed message or stack trace
+                "Error...",                          // The error message/title
+                JOptionPane.DEFAULT_OPTION,          // Option type (default option type)
+                JOptionPane.ERROR_MESSAGE,           // Message type (error message icon)
+                null,                                // Icon (null means default icon)
+                options,                             // The options for the buttons
+                options[0]                           // The default option (Close)
+            );
+            
+            if (choice == 1) {
+                StringSelection selection = new StringSelection(stackTrace);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
+                JOptionPane.showMessageDialog(null, "Error text has been copied to the clipboard.");
+            } else if (choice == 2) {
+                try {
+                    String reportUrl = "https://github.com/LorenzoBertinelli/Password-Generator/issues";
+
+                    if (Desktop.isDesktopSupported()) {
+                        Desktop desktop = Desktop.getDesktop();
+                        if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                            desktop.browse(new URI(reportUrl));
+                        }
+                    }
+                } catch (IOException | URISyntaxException e) {
+                    JOptionPane.showMessageDialog(null, "Failed to open the web page. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } while (choice == 1 || choice == 2);
+    }
+    
     private void adjustMenuAlignment() {
         // Create a horizontal glue
         Box.Filler horizontalGlue = new Box.Filler(
@@ -200,6 +253,8 @@ public class MainGUI extends javax.swing.JFrame {
 
         GeneratePasswordButton.setBackground(new java.awt.Color(0, 102, 204));
         GeneratePasswordButton.setText("Generate Password");
+        GeneratePasswordButton.setMaximumSize(new java.awt.Dimension(50, 27));
+        GeneratePasswordButton.setMinimumSize(new java.awt.Dimension(50, 27));
         GeneratePasswordButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 GeneratePasswordButtonActionPerformed(evt);
@@ -236,11 +291,11 @@ public class MainGUI extends javax.swing.JFrame {
             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
+                    .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
                         .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(Symbol)
                             .addComponent(LowercaseLetters))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                        .addGap(102, 102, 102)
                         .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(Numbers, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
@@ -248,20 +303,22 @@ public class MainGUI extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(SaveButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(Uppercase, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(252, 252, 252))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
-                .addGap(258, 258, 258)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PasswordGeneratorPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(SecurityPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(GeneratePasswordButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(GeneratePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(252, 252, 252))
             .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
                 .addGap(240, 240, 240)
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8))
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(PasswordGeneratorPanelLayout.createSequentialGroup()
+                        .addGap(155, 155, 155)
+                        .addComponent(PasswordSize, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(265, 265, 265))
         );
         PasswordGeneratorPanelLayout.setVerticalGroup(
             PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -270,7 +327,7 @@ public class MainGUI extends javax.swing.JFrame {
                 .addComponent(jLabel8)
                 .addGap(51, 51, 51)
                 .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addGap(48, 48, 48)
                 .addGroup(PasswordGeneratorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Symbol)
                     .addComponent(Uppercase))
@@ -285,7 +342,7 @@ public class MainGUI extends javax.swing.JFrame {
                     .addComponent(OutputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SaveButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(GeneratePasswordButton)
+                .addComponent(GeneratePasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(SecurityPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(118, 118, 118))
@@ -704,8 +761,7 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void SaveButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButton2ActionPerformed
-        MainPanel.setSelectedComponent(NewEntryPanel);
-        
+        MainPanel.setSelectedComponent(NewEntryPanel);      
         Password.setText(OutputPassword.getText());
     }//GEN-LAST:event_SaveButton2ActionPerformed
 
@@ -780,6 +836,7 @@ public class MainGUI extends javax.swing.JFrame {
                 desktop.browse(new URI(url));
             } catch (IOException | URISyntaxException ex) {
                     ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Failed to open the web page. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } 
         else {
@@ -798,6 +855,7 @@ public class MainGUI extends javax.swing.JFrame {
                 desktop.browse(new URI(url));
             } catch (IOException | URISyntaxException ex) {
                     ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Failed to open the web page. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         else {
@@ -857,7 +915,11 @@ public class MainGUI extends javax.swing.JFrame {
     private void displayEntries(List<Entry> entries) {
         DefaultTableModel model = new DefaultTableModel(new Object[]{"Account Name", "Password", "Email", "Note", "Actions"}, 0);
         PasswordTable.setModel(model);
-
+        
+        if(entries==null){
+            return;
+        }
+        
         // Inizia il ciclo da 1 per saltare la prima riga
         for (int i = 0; i < entries.size(); i++) {
             Entry entry = entries.get(i);
