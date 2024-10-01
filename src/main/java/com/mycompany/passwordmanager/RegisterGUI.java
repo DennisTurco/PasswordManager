@@ -215,11 +215,14 @@ public class RegisterGUI extends javax.swing.JFrame {
         String username = Username.getText();
         String password = Password.getText(); 
         String confirmPassword = ConfirmPassword.getText();
-
+        
         // Verifica che i campi non siano vuoti e che le password corrispondano
         if(username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || !password.equals(confirmPassword)){
             JOptionPane.showMessageDialog(this, "Check the parameters again", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
+        } else if(jsonManager.ReadAccoutToJSON(username, null)){
+            JOptionPane.showMessageDialog(this, "This username is already used", "Error", JOptionPane.ERROR_MESSAGE);         
+        }
+        else {
             // Crea un file JSON separato per ciascun utente
             jsonManager.createUserFile(username, password);
 

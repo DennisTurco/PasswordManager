@@ -48,6 +48,12 @@ public class JsonManager implements IJsonManager{
 
         try {
 
+            File file = new File(filePath);
+
+            if (!file.exists()) {
+                return false;
+            } 
+        
             // Leggi il contenuto del file JSON senza tentare di decifrare l'intero file
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
             JSONArray jsonArray = new JSONArray(content);
@@ -65,7 +71,7 @@ public class JsonManager implements IJsonManager{
                 String decryptedPassword = new String(EncryptionUtil.decryptData(encodedPassword, secretKey));
 
                 // Confronta i dati decifrati con quelli inseriti dall'utente
-                if (username.equals(decryptedUsername) && password.equals(decryptedPassword)) {
+                if ((password==null && username.equals(decryptedUsername)) || (username.equals(decryptedUsername) && password.equals(decryptedPassword))) {
                     return true; // Accesso corretto
                 }
             }
